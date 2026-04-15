@@ -1,0 +1,6 @@
+@Jilo.App_HostAddress = http://localhost:5093
+
+GET {{Jilo.App_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
