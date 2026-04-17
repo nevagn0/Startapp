@@ -1,0 +1,15 @@
+﻿using ErrorOr;
+using Jilo.App.Domain;
+
+namespace Jilo.App.Applicatoin.Common.Repositories;
+
+public interface IUserRepository
+{
+    void Add(User user);
+
+    Task<(bool EmailExists, bool UsernameExists)> ExistsAsync(string email, string username, CancellationToken cancellationToken = default);
+
+    Task<ErrorOr<User>> FindAsync(string email, CancellationToken cancellationToken = default);
+
+    Task<ErrorOr<User>> GetAsync(Guid Id, CancellationToken cancellationToken = default);
+}

@@ -16,7 +16,7 @@ public sealed class RefreshToken
 
     public User User { get; private set; } = null!;
 
-    public bool IsActive => ExpiresAtUtc >= DateTime.UtcNow && !RevokedAtUtc.HasValue
+    public bool IsActive => ExpiresAtUtc >= DateTime.UtcNow && !RevokedAtUtc.HasValue;
 
     public RefreshToken(Guid userId, string tokenHash, DateTime expiresAtUtc)
     {
@@ -26,5 +26,15 @@ public sealed class RefreshToken
         CreatedAtUtc = DateTime.UtcNow;
         ExpiresAtUtc = expiresAtUtc;
         RevokedAtUtc = null;
+    }
+
+    public void Revoke()
+    {
+        if (RevokedAtUtc.HasValue)
+        {
+            return;
+        }
+
+        RevokedAtUtc = DateTime.UtcNow;
     }
 }
