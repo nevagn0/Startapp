@@ -8,6 +8,7 @@ using MediatR;
 namespace Jilo.App.Applicatoin.Features.Auth.Register;
 
 public sealed class RegisterUserCommandHandler(
+    IMediator mediator,
     IUserRepository repo,
     IPasswordHasher passwordHasher)
     : IRequestHandler<RegisterUserCommand, ErrorOr<RegisterUserResponse>>
@@ -36,6 +37,8 @@ public sealed class RegisterUserCommandHandler(
         var user = new User(request.Username, request.Email, passwordHash, Role.Player);
 
         repo.Add(user);
+
+        await mediator.Publish(new UserRegisteredEvent(user.Id, user.Username), cancellationToken);
 
         return new RegisterUserResponse(
             user.Id,
