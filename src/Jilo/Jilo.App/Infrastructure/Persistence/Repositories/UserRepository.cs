@@ -1,6 +1,7 @@
 ﻿using ErrorOr;
 using Jilo.App.Applicatoin.Common.Repositories;
 using Jilo.App.Domain;
+using Jilo.App.Domain.UserEntity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Jilo.App.Infrastructure.Persistence.Repositories;

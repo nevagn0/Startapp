@@ -1,5 +1,4 @@
-﻿using Jilo.App.Domain;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Jilo.App.Infrastructure.Persistence.Configuratoins;

@@ -1,7 +1,7 @@
 ﻿using ErrorOr;
 using Jilo.App.Applicatoin.Common.Services;
-using Jilo.App.Domain;
 using Jilo.App.Domain.Models;
+using Jilo.App.Domain.UserEntity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;

@@ -1,4 +1,4 @@
-﻿namespace Jilo.App.Domain;
+﻿namespace Jilo.App.Domain.UserEntity;
 
 public sealed class User
 {

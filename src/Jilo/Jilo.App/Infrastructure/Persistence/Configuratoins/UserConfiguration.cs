@@ -1,4 +1,4 @@
-﻿using Jilo.App.Domain;
+﻿using Jilo.App.Domain.UserEntity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
