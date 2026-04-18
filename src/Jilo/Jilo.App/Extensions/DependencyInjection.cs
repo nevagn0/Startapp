@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Jilo.App.Api.Authorization;
+using Jilo.App.Api.Authorization.Handlers;
 using Jilo.App.Api.Authorization.Requirements;
 using Jilo.App.Applicatoin.Behaviors;
 using Jilo.App.Applicatoin.Common.Repositories;
@@ -8,6 +9,7 @@ using Jilo.App.Infrastructure.Persistence;
 using Jilo.App.Infrastructure.Persistence.Repositories;
 using Jilo.App.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -137,6 +139,8 @@ public static class DependencyInjection
     {
         services.AddAuthorizationBuilder()
             .AddPolicy(PolicyNames.ProfileOwner, policy => policy.AddRequirements(new ProfileOwnerRequirement()));
+
+        services.AddTransient<IAuthorizationHandler, ProfileOwnerRequirementHandler>();
 
         return services;
     }

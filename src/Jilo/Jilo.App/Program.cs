@@ -7,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddServiceContext(builder.Configuration);
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddRepositories();
 
 builder.Services.AddSecurity();

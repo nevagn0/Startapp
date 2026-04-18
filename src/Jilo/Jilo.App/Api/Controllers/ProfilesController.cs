@@ -74,7 +74,7 @@ public sealed class ProfilesController(IMediator mediator) : ControllerBase
             });
     }
 
-    [Authorize]
+    [Authorize(Policy = PolicyNames.ProfileOwner)]
     [HttpPatch("me")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
