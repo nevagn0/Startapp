@@ -2,7 +2,6 @@ using Jilo.App.Extensions;
 using Jilo.App.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
-using System.Numerics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,9 +13,13 @@ builder.Services.AddSecurity();
 
 builder.Services.AddJwtTokens(builder.Configuration);
 
+builder.Services.AddJwtBearerAuthentication(builder.Configuration);
+
 builder.Services.AddMediatR();
 
 builder.Services.AddValidators();
+
+builder.Services.AddAuthorizationPolicies();
 
 builder.Services.AddControllers();
 
@@ -35,6 +38,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
