@@ -16,6 +16,8 @@ public sealed class User
 
     public DateTime UpdatedAtUtc { get; private set; }
 
+    public Profile Profile { get; private set; } = null!;
+
     public ICollection<RefreshToken> RefreshTokens { get; private set; }
 
     public User(string username, string email, string passwordHash, Role role)
