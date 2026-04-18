@@ -3,4 +3,4 @@ using Jilo.App.Domain.Models;
 
 namespace Jilo.App.Applicatoin.Features.Auth.Login;
 
-public sealed record LoginUserCommand(string Email, string Password) : ICommand<TokenPair>;
+public sealed record LoginUserCommand(string Username, string Password) : ICommand<TokenPair>;

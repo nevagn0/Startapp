@@ -25,11 +25,11 @@ public sealed class UserRepository(ServiceContext context) : IUserRepository
         );
     }
 
-    public async Task<ErrorOr<User>> FindAsync(string email, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<User>> FindAsync(string username, CancellationToken cancellationToken = default)
     {
         var user = await context.Users
             .Include(u => u.RefreshTokens)
-            .SingleOrDefaultAsync(u => u.Email == email, cancellationToken);
+            .SingleOrDefaultAsync(u => u.Username == username, cancellationToken);
 
         if (user is null)
         {

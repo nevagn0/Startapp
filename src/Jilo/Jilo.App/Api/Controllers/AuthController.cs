@@ -54,7 +54,7 @@ public sealed class AuthController(IMediator mediator, IOptions<JwtOptions> jwtO
     public async Task<ActionResult> LoginAsync([FromBody] LoginUserRequest request,
         CancellationToken cancellationToken = default)
     {
-        var command = new LoginUserCommand(request.Email, request.Password);
+        var command = new LoginUserCommand(request.Username, request.Password);
 
         var loginResult = await mediator.Send(command, cancellationToken);
 

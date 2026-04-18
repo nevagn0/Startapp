@@ -17,7 +17,7 @@ public sealed class LoginUserCommandHandler(
 {
     public async Task<ErrorOr<TokenPair>> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
-        var user = await userRepo.FindAsync(request.Email, cancellationToken);
+        var user = await userRepo.FindAsync(request.Username, cancellationToken);
 
         if (user.IsError)
         {
