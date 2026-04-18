@@ -1,10 +1,51 @@
 services:
-  
+
+  jilo-frontend:
+    image: jilo-frontend
+    build:
+      context: ./jilo-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      - jilo.app
+
   jilo.app:
     image: ${DOCKER_REGISTRY-}jiloapp
     build:
       context: .
       dockerfile: Jilo.App/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ConnectionStrings__PostgresDatabase=Host=postgres-db;Port=5432;Database=jilo;Username=Developer;Password=Developer123!
+      - JwtOptions__Audience=Jilo.App
+      - JwtOptions__Issuer=AuthService
+      - JwtOptions__Key=12389e6ruh4378refas34trgudisaghv78rfg8745whfgrewkjdgfh3489q0ter
+      - JwtOptions__AccessTokenLifetimeSeconds=300
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+  
 
   postgres-db:
     image: postgres:18
+    environment:
+      - POSTGRES_USER=Developer
+      - POSTGRES_PASSWORD=Developer123!
+      - POSTGRES_DB=jilo
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U Developer -d jilo"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  postgres-data:
