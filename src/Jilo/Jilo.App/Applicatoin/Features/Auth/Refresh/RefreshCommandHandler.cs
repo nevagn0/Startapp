@@ -3,6 +3,7 @@ using Jilo.App.Applicatoin.Common.Repositories;
 using Jilo.App.Applicatoin.Common.Services;
 using Jilo.App.Domain;
 using Jilo.App.Domain.Models;
+using Jilo.App.Domain.UserEntity;
 using MediatR;
 
 namespace Jilo.App.Applicatoin.Features.Auth.Refresh;
