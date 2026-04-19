@@ -27,4 +27,9 @@
     <PackageReference Include="Scalar.AspNetCore" Version="2.14.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Infrastructure\Persistence\Migrations\" />
+    <Folder Include="wwwroot\avatars\" />
+  </ItemGroup>
+
 </Project>

@@ -4,6 +4,7 @@ using Jilo.App.Api.Dto.Profiles;
 using Jilo.App.Application.Common.Services;
 using Jilo.App.Applicatoin.Features.Profiles.Get;
 using Jilo.App.Applicatoin.Features.Profiles.Update;
+using Jilo.App.Applicatoin.Features.Profiles.UpdateAvatar;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,9 @@ namespace Jilo.App.Api.Controllers;
 
 [ApiController]
 [Route("api/v1/profile/")]
+public sealed class ProfilesController(
+    IMediator mediator,
+    IWebHostEnvironment env) : ControllerBase
 public sealed class ProfilesController(IMediator mediator, IUserGameService userGameService) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
@@ -117,6 +121,66 @@ public sealed class ProfilesController(IMediator mediator, IUserGameService user
                     detail: $"Unexpected error. Details: {error.Description}")
             });
     }
+
+    [Authorize]
+    [HttpPost("me/avatar")]
+    [Consumes("multipart/form-data")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> UploadAvatar(IFormFile file, CancellationToken cancellationToken = default)
+    {
+        var userIdStr = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userIdStr is null || !Guid.TryParse(userIdStr, out var userId))
+        {
+            return Problem(statusCode: StatusCodes.Status401Unauthorized);
+        }
+
+        if (file == null || file.Length == 0)
+            return BadRequest("No file uploaded.");
+
+        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+        var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+        if (!allowedExtensions.Contains(ext))
+            return BadRequest("Only JPG, PNG, WEBP images are allowed.");
+
+        if (file.Length > 5 * 1024 * 1024) // 5 MB
+            return BadRequest("Max file size is 5 MB.");
+
+        var fileName = $"{userId}_{Guid.NewGuid()}{ext}";
+        var uploadsFolder = Path.Combine(env.WebRootPath, "avatars");
+        if (!Directory.Exists(uploadsFolder))
+            Directory.CreateDirectory(uploadsFolder);
+
+        var filePath = Path.Combine(uploadsFolder, fileName);
+
+        await using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream, cancellationToken);
+        }
+
+        var avatarUrl = $"{Request.Scheme}://{Request.Host}/avatars/{fileName}";
+
+        var command = new UpdateAvatarCommand(userId, avatarUrl);
+        var updateAvatarResult = await mediator.Send(command, cancellationToken);
+        
+        return updateAvatarResult.MatchFirst<ActionResult>(
+            onValue: value => Ok(),
+            onFirstError: error => error.Type switch
+            {
+                ErrorType.NotFound => Problem(
+                    statusCode: StatusCodes.Status404NotFound,
+                    title: error.Code,
+                    detail: error.Description),
+                _ => Problem(
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: error.Code,
+                    detail: $"Unexpected error. Details: {error.Description}")
+            });
+    }
+}
 
     [Authorize]
     [HttpGet("games")]

@@ -49,6 +49,8 @@ if (app.Environment.IsDevelopment())
     await GamesSeeder.InitializeAsync(context);
 }
 
+app.UseStaticFiles();
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
