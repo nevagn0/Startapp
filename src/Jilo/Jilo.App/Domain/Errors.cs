@@ -74,4 +74,11 @@ public static class Errors
             code: "RefreshToken.NotFound",
             description: "Refresh token not found");
     }
+
+    public static class Profile
+    {
+        public static Error NotFound => Error.NotFound(
+            code: "Profile.NotFound",
+            description: "Profile not found");
+    }
 }

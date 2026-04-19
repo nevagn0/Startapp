@@ -15,6 +15,8 @@ public sealed class ServiceContext : DbContext
 
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
+    public DbSet<Profile> Profiles => Set<Profile>();
+
     public ServiceContext(DbContextOptions<ServiceContext> options)
         : base(options)
     {
