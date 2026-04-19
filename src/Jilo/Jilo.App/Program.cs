@@ -39,6 +39,8 @@ if (app.Environment.IsDevelopment())
     context.Database.Migrate();
 }
 
+app.UseStaticFiles();
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

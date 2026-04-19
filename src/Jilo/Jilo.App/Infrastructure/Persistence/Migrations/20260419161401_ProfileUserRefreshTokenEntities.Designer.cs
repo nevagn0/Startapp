@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Jilo.App.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ServiceContext))]
-    [Migration("20260418093140_ProfilesDbSetAndNullableBioInProfileTable")]
-    partial class ProfilesDbSetAndNullableBioInProfileTable
+    [Migration("20260419161401_ProfileUserRefreshTokenEntities")]
+    partial class ProfileUserRefreshTokenEntities
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
