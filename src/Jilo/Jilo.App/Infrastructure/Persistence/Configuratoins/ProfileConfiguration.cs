@@ -16,5 +16,6 @@ public sealed class ProfileConfiguration : IEntityTypeConfiguration<Profile>
             .HasOne(x => x.User)
             .WithOne(x => x.Profile)
             .OnDelete(DeleteBehavior.Cascade);
+
     }
 }

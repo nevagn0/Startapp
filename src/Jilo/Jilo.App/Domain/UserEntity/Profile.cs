@@ -1,9 +1,12 @@
-﻿namespace Jilo.App.Domain.UserEntity;
+﻿using Jilo.App.Domain.Entities;
+using Jilo.App.Domain.GameEntity;
+
+namespace Jilo.App.Domain.UserEntity;
 
 public sealed class Profile
 {
     private int _rating;
-
+    
     public Guid Id { get; private init; }
 
     public Guid UserId { get; private init; }
@@ -16,6 +19,7 @@ public sealed class Profile
 
     public User User { get; private init; } = null!;
 
+    public ICollection<UserGame> UserGames { get; private set; } = null!;
     public int Rating => _rating;
 
     public Profile(Guid userId, string username, string bio, string? avatarUrl = null)
