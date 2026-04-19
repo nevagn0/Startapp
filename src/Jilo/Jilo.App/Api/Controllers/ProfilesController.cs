@@ -14,10 +14,8 @@ namespace Jilo.App.Api.Controllers;
 
 [ApiController]
 [Route("api/v1/profile/")]
-public sealed class ProfilesController(
-    IMediator mediator,
-    IWebHostEnvironment env) : ControllerBase
-public sealed class ProfilesController(IMediator mediator, IUserGameService userGameService) : ControllerBase
+
+public sealed class ProfilesController(IMediator mediator, IUserGameService userGameService, IWebHostEnvironment env) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
     private readonly IUserGameService _userGameService = userGameService;
@@ -180,7 +178,6 @@ public sealed class ProfilesController(IMediator mediator, IUserGameService user
                     detail: $"Unexpected error. Details: {error.Description}")
             });
     }
-}
 
     [Authorize]
     [HttpGet("games")]
@@ -190,6 +187,7 @@ public sealed class ProfilesController(IMediator mediator, IUserGameService user
     public async Task<IActionResult> GetMyGames(CancellationToken cancellationToken)
     {
         var userId = GetUserId();
+
         var result = await _userGameService.GetUserGamesAsync(userId, cancellationToken);
 
         return result.Match(

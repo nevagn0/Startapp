@@ -57,6 +57,7 @@ public class UserGameService : IUserGameService
         CancellationToken cancellationToken = default)
     {
         var userGame = await _userGameRepository.GetByIdAsync(userGameId, cancellationToken);
+
         if (userGame == null)
             return Error.NotFound("UserGame.NotFound", $"User game with ID '{userGameId}' not found");
 
@@ -110,7 +111,14 @@ public class UserGameService : IUserGameService
         Guid userId,
         CancellationToken cancellationToken = default)
     {
-        var userGames = await _userGameRepository.GetByUserIdAsync(userId, cancellationToken);
+        var profile = await _profileRepository.GetByUserIdAsync(userId, cancellationToken);
+
+        if (profile.IsError)
+        {
+            return profile.Errors;
+        }
+
+        var userGames = await _userGameRepository.GetByUserIdAsync(profile.Value.Id, cancellationToken);
 
         var response = userGames.Select(ug => new UserGameResponse(
             ug.Id,
