@@ -12,12 +12,14 @@ public sealed class UserGameConfiguration : IEntityTypeConfiguration<UserGame>
         builder.HasKey(ug => ug.Id);
 
         builder.HasOne(ug => ug.Profile)
-            .WithMany(p => p.UserGames);
+              .WithMany(p => p.UserGames)
+              .HasForeignKey(ug => ug.ProfileId)
+              .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(ug => ug.GameCatalog)
             .WithMany(g => g.UserGames);
 
-        builder.HasIndex(ug => new { ug.UserId, ug.GameId })
+        builder.HasIndex(ug => new { ug.ProfileId, ug.GameId })
             .IsUnique();
     }
 }

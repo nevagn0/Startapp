@@ -6,7 +6,7 @@ namespace Jilo.App.Domain.Entities;
 public sealed class UserGame
 {
     public Guid Id { get; private init; }
-    public Guid UserId { get; private set; }
+    public Guid ProfileId { get; private set; }
     public Guid GameId { get; private set; }
     public string Role { get; private set; }
     public string Rank { get; private set; }
@@ -15,10 +15,10 @@ public sealed class UserGame
     public Game GameCatalog { get; private set; } = null!;
     public Profile Profile { get; private set; } = null!; 
 
-    public UserGame(Guid userId, Guid gameId, string role, string rank)
+    public UserGame(Guid profileId, Guid gameId, string role, string rank)
     {
         Id = Guid.NewGuid();
-        UserId = userId;
+        ProfileId = profileId;
         GameId = gameId;
         Role = role;
         Rank = rank;

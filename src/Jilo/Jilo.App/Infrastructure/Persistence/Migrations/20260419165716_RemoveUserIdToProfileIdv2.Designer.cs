@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Jilo.App.Infrastructure.Persistence.Migrations
+namespace Jilo.App.Migrations
 {
     [DbContext(typeof(ServiceContext))]
-    [Migration("20260418121925_AddGamesv2")]
-    partial class AddGamesv2
+    [Migration("20260419165716_RemoveUserIdToProfileIdv2")]
+    partial class RemoveUserIdToProfileIdv2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,16 +48,11 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.HasIndex("GameId");
 
-                    b.HasIndex("ProfileId");
-
-                    b.HasIndex("UserId", "GameId")
+                    b.HasIndex("ProfileId", "GameId")
                         .IsUnique();
 
                     b.ToTable("UserGames");
@@ -102,7 +97,6 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Bio")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<Guid>("UserId")
@@ -120,7 +114,7 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Profile");
+                    b.ToTable("Profiles");
                 });
 
             modelBuilder.Entity("Jilo.App.Domain.UserEntity.RefreshToken", b =>

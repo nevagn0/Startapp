@@ -43,45 +43,6 @@ public class GameController : ControllerBase
         );
     }
 
-    [HttpPost("AddGame")]
-    public async Task<IActionResult> AddGameToUser([FromBody] AddGameToUserRequest request, CancellationToken cancellationToken)
-    {
-        var userId = GetUserId();
-        var result = await _userGameService.AddGameToUserAsync(userId, request, cancellationToken);
-
-        return result.Match(
-            _ => Ok(new { message = "Game added successfully" }),
-            errors => Problem(errors)
-        );
-    }
-
-    [HttpPut("{userGameId:guid} GameUpdate")]
-    public async Task<IActionResult> UpdateUserGame(
-        Guid userGameId,
-        [FromBody] UpdateUserGameRequest request,
-        CancellationToken cancellationToken)
-    {
-        var userId = GetUserId();
-        var result = await _userGameService.UpdateUserGameAsync(userId, userGameId, request, cancellationToken);
-
-        return result.Match(
-            _ => Ok(new { message = "Game updated successfully" }),
-            errors => Problem(errors)
-        );
-    }
-
-    [HttpDelete("{userGameId:guid} GameDelete")]
-    public async Task<IActionResult> DeleteUserGame(Guid userGameId, CancellationToken cancellationToken)
-    {
-        var userId = GetUserId();
-        var result = await _userGameService.DeleteUserGameAsync(userId, userGameId, cancellationToken);
-
-        return result.Match(
-            _ => NoContent(),
-            errors => Problem(errors)
-        );
-    }
-
     private Guid GetUserId()
     {
         var userIdClaim = User.FindFirst("sub")?.Value

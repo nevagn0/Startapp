@@ -47,7 +47,7 @@ public class UserGameRepository : IUserGameRepository
     {
         return await _context.UserGames
             .Include(u => u.GameCatalog)
-            .Where(u => u.UserId == userId)
+            .Where(u => u.ProfileId == userId)
             .ToListAsync(cancellationToken);
     }
 

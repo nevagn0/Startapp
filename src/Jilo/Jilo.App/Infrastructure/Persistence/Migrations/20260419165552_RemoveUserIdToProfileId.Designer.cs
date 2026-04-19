@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Jilo.App.Infrastructure.Persistence.Migrations
+namespace Jilo.App.Migrations
 {
     [DbContext(typeof(ServiceContext))]
-    [Migration("20260418121719_AddGames")]
-    partial class AddGames
+    [Migration("20260419165552_RemoveUserIdToProfileId")]
+    partial class RemoveUserIdToProfileId
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,9 +37,6 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("GameId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("ProfileId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Rank")
                         .IsRequired()
                         .HasColumnType("text");
@@ -54,8 +51,6 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("GameId");
-
-                    b.HasIndex("ProfileId");
 
                     b.HasIndex("UserId", "GameId")
                         .IsUnique();
@@ -102,7 +97,6 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Bio")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<Guid>("UserId")
@@ -120,7 +114,7 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Profile");
+                    b.ToTable("Profiles");
                 });
 
             modelBuilder.Entity("Jilo.App.Domain.UserEntity.RefreshToken", b =>
@@ -204,7 +198,7 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
 
                     b.HasOne("Jilo.App.Domain.UserEntity.Profile", "Profile")
                         .WithMany("UserGames")
-                        .HasForeignKey("ProfileId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

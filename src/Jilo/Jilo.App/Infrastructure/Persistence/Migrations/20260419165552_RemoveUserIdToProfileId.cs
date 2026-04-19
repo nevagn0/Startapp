@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace Jilo.App.Infrastructure.Persistence.Migrations
+namespace Jilo.App.Migrations
 {
     /// <inheritdoc />
-    public partial class AddGames : Migration
+    public partial class RemoveUserIdToProfileId : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Jilo.App.Infrastructure.Persistence.Migrations
+namespace Jilo.App.Migrations
 {
     [DbContext(typeof(ServiceContext))]
     partial class ServiceContextModelSnapshot : ModelSnapshot
@@ -45,16 +45,11 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.HasIndex("GameId");
 
-                    b.HasIndex("ProfileId");
-
-                    b.HasIndex("UserId", "GameId")
+                    b.HasIndex("ProfileId", "GameId")
                         .IsUnique();
 
                     b.ToTable("UserGames");

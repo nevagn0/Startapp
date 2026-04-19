@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Jilo.App.Infrastructure.Persistence.Migrations
+namespace Jilo.App.Migrations
 {
     [DbContext(typeof(ServiceContext))]
-    [Migration("20260418093140_ProfilesDbSetAndNullableBioInProfileTable")]
-    partial class ProfilesDbSetAndNullableBioInProfileTable
+    [Migration("20260419164450_RemoveUserId")]
+    partial class RemoveUserId
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,68 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Jilo.App.Domain.Entities.UserGame", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("AddedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("GameId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Rank")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameId");
+
+                    b.HasIndex("UserId", "GameId")
+                        .IsUnique();
+
+                    b.ToTable("UserGames");
+                });
+
+            modelBuilder.Entity("Jilo.App.Domain.GameEntity.Game", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CoverImageUrl")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("GameName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameName")
+                        .IsUnique();
+
+                    b.ToTable("Games", (string)null);
+                });
 
             modelBuilder.Entity("Jilo.App.Domain.UserEntity.Profile", b =>
                 {
@@ -126,6 +188,25 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Jilo.App.Domain.Entities.UserGame", b =>
+                {
+                    b.HasOne("Jilo.App.Domain.GameEntity.Game", "GameCatalog")
+                        .WithMany("UserGames")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Jilo.App.Domain.UserEntity.Profile", "Profile")
+                        .WithMany("UserGames")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GameCatalog");
+
+                    b.Navigation("Profile");
+                });
+
             modelBuilder.Entity("Jilo.App.Domain.UserEntity.Profile", b =>
                 {
                     b.HasOne("Jilo.App.Domain.UserEntity.User", "User")
@@ -146,6 +227,16 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Jilo.App.Domain.GameEntity.Game", b =>
+                {
+                    b.Navigation("UserGames");
+                });
+
+            modelBuilder.Entity("Jilo.App.Domain.UserEntity.Profile", b =>
+                {
+                    b.Navigation("UserGames");
                 });
 
             modelBuilder.Entity("Jilo.App.Domain.UserEntity.User", b =>
