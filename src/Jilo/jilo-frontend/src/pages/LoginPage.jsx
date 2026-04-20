@@ -1,9 +1,13 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { loginUser } from '../api/auth'
 import { PageFrame } from '../components/PageFrame'
+import { useAuth } from '../context/useAuth'
 
 export function LoginPage() {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { signIn } = useAuth()
   const [form, setForm] = useState({ username: '', password: '' })
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
@@ -27,7 +31,10 @@ export function LoginPage() {
     try {
       setIsSubmitting(true)
       await loginUser(form)
-      setSuccess('Вход выполнен успешно. Теперь можно переходить к поиску команды.')
+      signIn()
+      setSuccess('Вход выполнен успешно.')
+      const redirectTo = location.state?.from || '/'
+      navigate(redirectTo, { replace: true })
     } catch (submitError) {
       setError(submitError.message || 'Не удалось выполнить вход.')
     } finally {

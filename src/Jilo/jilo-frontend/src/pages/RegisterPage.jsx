@@ -1,10 +1,16 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { registerUser } from '../api/auth'
 import { PageFrame } from '../components/PageFrame'
 
 export function RegisterPage() {
-  const [form, setForm] = useState({ email: '', username: '', password: '' })
+  const navigate = useNavigate()
+  const [form, setForm] = useState({
+    email: '',
+    username: '',
+    password: '',
+    confirmPassword: '',
+  })
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -19,7 +25,7 @@ export function RegisterPage() {
     setError('')
     setSuccess('')
 
-    if (!form.email.trim() || !form.username.trim() || !form.password.trim()) {
+    if (!form.email.trim() || !form.username.trim() || !form.password.trim() || !form.confirmPassword.trim()) {
       setError('Все поля обязательны для регистрации.')
       return
     }
@@ -29,12 +35,22 @@ export function RegisterPage() {
       return
     }
 
+    if (form.password !== form.confirmPassword) {
+      setError('Пароли не совпадают.')
+      return
+    }
+
     try {
       setIsSubmitting(true)
-      const response = await registerUser(form)
+      const response = await registerUser({
+        email: form.email,
+        username: form.username,
+        password: form.password,
+      })
       setSuccess(
         `Профиль ${response?.username || form.username} успешно создан. Теперь можно войти в аккаунт.`,
       )
+      setTimeout(() => navigate('/login'), 600)
     } catch (submitError) {
       setError(submitError.message || 'Не удалось зарегистрироваться.')
     } finally {
@@ -89,6 +105,20 @@ export function RegisterPage() {
               onChange={onChange}
               autoComplete="new-password"
               placeholder="Минимум 6 символов"
+            />
+          </label>
+
+          <label className="label" htmlFor="confirmPassword">
+            Повторите пароль
+            <input
+              className="input"
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              value={form.confirmPassword}
+              onChange={onChange}
+              autoComplete="new-password"
+              placeholder="Введите пароль еще раз"
             />
           </label>
 

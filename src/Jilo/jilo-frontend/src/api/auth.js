@@ -12,14 +12,17 @@ export const loginUser = async (payload) => {
     body: JSON.stringify(payload),
   })
 
-  if (data && typeof data === 'object' && data.accessToken) {
-    localStorage.setItem('jilo_access_token', data.accessToken)
-  }
+  localStorage.setItem('jilo_is_authenticated', 'true')
 
   return data
 }
 
 export const logoutUser = () =>
   request('/api/v1/auth/logout', {
+    method: 'POST',
+  })
+
+export const refreshSession = () =>
+  request('/api/v1/auth/refresh', {
     method: 'POST',
   })
