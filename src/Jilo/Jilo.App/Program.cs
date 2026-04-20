@@ -1,10 +1,6 @@
-using Jilo.App.Application.Common.Repositories;
-using Jilo.App.Application.Common.Services;
-using Jilo.App.Application.Services;
 using Jilo.App.Extensions;
 using Jilo.App.Infrastructure.Persistence;
 using Jilo.App.Infrastructure.Persistence.Seeders;
-using Jilo.App.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -15,6 +11,8 @@ builder.Services.AddServiceContext(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddRepositories();
+
+builder.Services.AddServices();
 
 builder.Services.AddSecurity();
 
@@ -31,10 +29,6 @@ builder.Services.AddAuthorizationPolicies();
 builder.Services.AddControllers();
 
 builder.Services.AddOpenApi();
-
-builder.Services.AddScoped<IUserGameService, UserGameService>();
-builder.Services.AddScoped<IGameRepository, GameRepository>();
-builder.Services.AddScoped<IUserGameRepository, UserGameRepository>();
 
 var app = builder.Build();
 

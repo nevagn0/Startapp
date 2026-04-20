@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Jilo.App.Migrations
+namespace Jilo.App.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ServiceContext))]
-    [Migration("20260419165716_RemoveUserIdToProfileIdv2")]
-    partial class RemoveUserIdToProfileIdv2
+    [Migration("20260420070452_Entities")]
+    partial class Entities
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

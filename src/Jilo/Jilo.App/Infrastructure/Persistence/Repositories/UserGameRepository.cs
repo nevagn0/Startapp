@@ -43,7 +43,7 @@ public class UserGameRepository : IUserGameRepository
             .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
     }
 
-    public async Task<IEnumerable<UserGame>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<UserGame>> GetByProfileIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         return await _context.UserGames
             .Include(u => u.GameCatalog)

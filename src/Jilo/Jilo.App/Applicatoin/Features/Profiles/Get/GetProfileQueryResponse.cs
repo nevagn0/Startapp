@@ -1,4 +1,6 @@
-﻿namespace Jilo.App.Applicatoin.Features.Profiles.Get;
+﻿using Jilo.App.Domain.GameEntity;
+
+namespace Jilo.App.Applicatoin.Features.Profiles.Get;
 
 public sealed record GetProfileQueryResponse
 {
@@ -9,4 +11,6 @@ public sealed record GetProfileQueryResponse
     public required string? Bio { get; init; }
     
     public required string? AvatarUrl { get; init; }
+
+    public required List<GameDto> Games { get; init; }
 }

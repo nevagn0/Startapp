@@ -8,18 +8,14 @@ using Jilo.App.Applicatoin.Features.Profiles.UpdateAvatar;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Jilo.App.Api.Controllers;
 
 [ApiController]
 [Route("api/v1/profile/")]
-
 public sealed class ProfilesController(IMediator mediator, IUserGameService userGameService, IWebHostEnvironment env) : ControllerBase
 {
-    private readonly IMediator _mediator = mediator;
-    private readonly IUserGameService _userGameService = userGameService;
-
     [Authorize]
     [HttpGet("me")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -27,16 +23,16 @@ public sealed class ProfilesController(IMediator mediator, IUserGameService user
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<GetProfileQueryResponse>> GetMyAsync(CancellationToken cancellationToken = default)
     {
-        var userIdStr = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var profileIdStr = HttpContext.User.FindFirst(JwtRegisteredClaimNames.Profile)?.Value;
 
-        if (userIdStr is null || !Guid.TryParse(userIdStr, out var userId))
+        if (profileIdStr is null || !Guid.TryParse(profileIdStr, out var profileId))
         {
             return Problem(statusCode: StatusCodes.Status401Unauthorized);
         }
 
-        var query = new GetProfileQuery(userId);
+        var query = new GetProfileQuery(profileId);
 
-        var profile = await _mediator.Send(query, cancellationToken);
+        var profile = await mediator.Send(query, cancellationToken);
 
         return profile.MatchFirst(
             onValue: value => Ok(value),
@@ -54,16 +50,16 @@ public sealed class ProfilesController(IMediator mediator, IUserGameService user
     }
 
     [Authorize]
-    [HttpGet("{userId:guid}")]
+    [HttpGet("{profileid:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<GetProfileQueryResponse>> GetAsync(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<ActionResult<GetProfileQueryResponse>> GetAsync(Guid profileId, CancellationToken cancellationToken = default)
     {
-        var query = new GetProfileQuery(userId);
+        var query = new GetProfileQuery(profileId);
 
-        var profile = await _mediator.Send(query, cancellationToken);
+        var profile = await mediator.Send(query, cancellationToken);
 
         return profile.MatchFirst(
             onValue: value => Ok(value),
@@ -90,16 +86,16 @@ public sealed class ProfilesController(IMediator mediator, IUserGameService user
     public async Task<ActionResult<UpdateProfileCommandResponse>> UpdateAsync([FromBody] UpdateProfileRequest request,
         CancellationToken cancellationToken = default)
     {
-        var userIdStr = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var profileIdStr = HttpContext.User.FindFirst(JwtRegisteredClaimNames.Profile)?.Value;
 
-        if (userIdStr is null || !Guid.TryParse(userIdStr, out var userId))
+        if (profileIdStr is null || !Guid.TryParse(profileIdStr, out var profileId))
         {
             return Problem(statusCode: StatusCodes.Status401Unauthorized);
         }
 
-        var command = new UpdateProfileCommand(userId, request.Bio);
+        var command = new UpdateProfileCommand(profileId, request.Bio);
 
-        var updateResult = await _mediator.Send(command, cancellationToken);
+        var updateResult = await mediator.Send(command, cancellationToken);
 
         return updateResult.MatchFirst(
             onValue: value => Ok(value),
@@ -129,9 +125,9 @@ public sealed class ProfilesController(IMediator mediator, IUserGameService user
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UploadAvatar(IFormFile file, CancellationToken cancellationToken = default)
     {
-        var userIdStr = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var profileIdStr = HttpContext.User.FindFirst(JwtRegisteredClaimNames.Profile)?.Value;
 
-        if (userIdStr is null || !Guid.TryParse(userIdStr, out var userId))
+        if (profileIdStr is null || !Guid.TryParse(profileIdStr, out var profileId))
         {
             return Problem(statusCode: StatusCodes.Status401Unauthorized);
         }
@@ -147,7 +143,7 @@ public sealed class ProfilesController(IMediator mediator, IUserGameService user
         if (file.Length > 5 * 1024 * 1024) // 5 MB
             return BadRequest("Max file size is 5 MB.");
 
-        var fileName = $"{userId}_{Guid.NewGuid()}{ext}";
+        var fileName = $"{profileId}_{Guid.NewGuid()}{ext}";
         var uploadsFolder = Path.Combine(env.WebRootPath, "avatars");
         if (!Directory.Exists(uploadsFolder))
             Directory.CreateDirectory(uploadsFolder);
@@ -161,7 +157,7 @@ public sealed class ProfilesController(IMediator mediator, IUserGameService user
 
         var avatarUrl = $"{Request.Scheme}://{Request.Host}/avatars/{fileName}";
 
-        var command = new UpdateAvatarCommand(userId, avatarUrl);
+        var command = new UpdateAvatarCommand(profileId, avatarUrl);
         var updateAvatarResult = await mediator.Send(command, cancellationToken);
         
         return updateAvatarResult.MatchFirst<ActionResult>(
@@ -180,15 +176,20 @@ public sealed class ProfilesController(IMediator mediator, IUserGameService user
     }
 
     [Authorize]
-    [HttpGet("games")]
+    [HttpGet("me/games")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetMyGames(CancellationToken cancellationToken)
     {
-        var userId = GetUserId();
+        var profileIdStr = HttpContext.User.FindFirst(JwtRegisteredClaimNames.Profile)?.Value;
 
-        var result = await _userGameService.GetUserGamesAsync(userId, cancellationToken);
+        if (profileIdStr is null || !Guid.TryParse(profileIdStr, out var profileId))
+        {
+            return Problem(statusCode: StatusCodes.Status401Unauthorized);
+        }
+
+        var result = await userGameService.GetUserGamesAsync(profileId, cancellationToken);
 
         return result.Match(
             value => Ok(value),
@@ -197,7 +198,7 @@ public sealed class ProfilesController(IMediator mediator, IUserGameService user
     }
 
     [Authorize]
-    [HttpPost("addgames")]
+    [HttpPost("me/games")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -205,8 +206,13 @@ public sealed class ProfilesController(IMediator mediator, IUserGameService user
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> AddGameToUser([FromBody] AddGameToUserRequest request, CancellationToken cancellationToken)
     {
-        var userId = GetUserId();
-        var result = await _userGameService.AddGameToUserAsync(userId, request, cancellationToken);
+        var profileIdStr = HttpContext.User.FindFirst(JwtRegisteredClaimNames.Profile)?.Value;
+        if (profileIdStr is null || !Guid.TryParse(profileIdStr, out var profileId))
+        {
+            return Problem(statusCode: StatusCodes.Status401Unauthorized);
+        }
+
+        var result = await userGameService.AddGameToUserAsync(profileId, request, cancellationToken);
 
         return result.Match(
             _ => Ok(new { message = "Game added successfully" }),
@@ -215,19 +221,24 @@ public sealed class ProfilesController(IMediator mediator, IUserGameService user
     }
 
     [Authorize]
-    [HttpPut("updategames/{userGameId:guid}")]
+    [HttpPatch("me/games/{userGameId:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateUserGame(
-        Guid userGameId,
+        [FromRoute] Guid userGameId,
         [FromBody] UpdateUserGameRequest request,
         CancellationToken cancellationToken)
     {
-        var userId = GetUserId();
-        var result = await _userGameService.UpdateUserGameAsync(userId, userGameId, request, cancellationToken);
+        var profileIdStr = HttpContext.User.FindFirst(JwtRegisteredClaimNames.Profile)?.Value;
+        if (profileIdStr is null || !Guid.TryParse(profileIdStr, out var profileId))
+        {
+            return Problem(statusCode: StatusCodes.Status401Unauthorized);
+        }
+
+        var result = await userGameService.UpdateUserGameAsync(profileId, userGameId, request, cancellationToken);
 
         return result.Match(
             _ => Ok(new { message = "Game updated successfully" }),
@@ -236,30 +247,25 @@ public sealed class ProfilesController(IMediator mediator, IUserGameService user
     }
 
     [Authorize]
-    [HttpDelete("deletegames/{userGameId:guid}")]
+    [HttpDelete("me/games/{userGameId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DeleteUserGame(Guid userGameId, CancellationToken cancellationToken)
     {
-        var userId = GetUserId();
-        var result = await _userGameService.DeleteUserGameAsync(userId, userGameId, cancellationToken);
+        var profileIdStr = HttpContext.User.FindFirst(JwtRegisteredClaimNames.Profile)?.Value;
+        if (profileIdStr is null || !Guid.TryParse(profileIdStr, out var profileId))
+        {
+            return Problem(statusCode: StatusCodes.Status401Unauthorized);
+        }
+
+        var result = await userGameService.DeleteUserGameAsync(profileId, userGameId, cancellationToken);
 
         return result.Match(
             _ => NoContent(),
             errors => Problem(errors)
         );
-    }
-
-    private Guid GetUserId()
-    {
-        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-        if (string.IsNullOrEmpty(userIdClaim))
-            throw new UnauthorizedAccessException("User ID not found in token");
-
-        return Guid.Parse(userIdClaim);
     }
 
     private IActionResult Problem(List<Error> errors)

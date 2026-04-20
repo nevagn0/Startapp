@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Jilo.App.Migrations
+namespace Jilo.App.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ServiceContext))]
     partial class ServiceContextModelSnapshot : ModelSnapshot

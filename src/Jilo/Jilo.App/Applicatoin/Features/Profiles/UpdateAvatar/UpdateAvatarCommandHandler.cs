@@ -10,7 +10,7 @@ public sealed class UpdateAvatarCommandHandler(
 {
     public async Task<ErrorOr<Unit>> Handle(UpdateAvatarCommand request, CancellationToken cancellationToken)
     {
-        var profile = await repo.GetByUserIdAsync(request.UserId, cancellationToken);
+        var profile = await repo.GetAsync(request.ProfileId, cancellationToken);
 
         if (profile.IsError)
         {

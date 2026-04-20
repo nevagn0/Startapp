@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Jilo.App.Migrations
+namespace Jilo.App.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class ProfileFixDropPK : Migration
+    public partial class Entities : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -90,12 +90,11 @@ namespace Jilo.App.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProfileId = table.Column<Guid>(type: "uuid", nullable: false),
                     GameId = table.Column<Guid>(type: "uuid", nullable: false),
                     Role = table.Column<string>(type: "text", nullable: false),
                     Rank = table.Column<string>(type: "text", nullable: false),
-                    AddedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ProfileId = table.Column<Guid>(type: "uuid", nullable: false)
+                    AddedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -149,14 +148,9 @@ namespace Jilo.App.Migrations
                 column: "GameId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserGames_ProfileId",
+                name: "IX_UserGames_ProfileId_GameId",
                 table: "UserGames",
-                column: "ProfileId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserGames_UserId_GameId",
-                table: "UserGames",
-                columns: new[] { "UserId", "GameId" },
+                columns: new[] { "ProfileId", "GameId" },
                 unique: true);
 
             migrationBuilder.CreateIndex(

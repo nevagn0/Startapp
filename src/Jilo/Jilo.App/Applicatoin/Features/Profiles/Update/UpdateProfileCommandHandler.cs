@@ -10,7 +10,7 @@ public sealed class UpdateProfileCommandHandler(
 {
     public async Task<ErrorOr<UpdateProfileCommandResponse>> Handle(UpdateProfileCommand request, CancellationToken cancellationToken)
     {
-        var profile = await repo.GetByUserIdAsync(request.UserId, cancellationToken);
+        var profile = await repo.GetAsync(request.ProfileId, cancellationToken);
 
         if (profile.IsError)
         {

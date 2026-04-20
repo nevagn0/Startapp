@@ -13,13 +13,23 @@ public sealed class GetProfileQueryHandler(
     public async Task<ErrorOr<GetProfileQueryResponse>> Handle(GetProfileQuery request, CancellationToken cancellationToken)
     {
         var profile = await context.Profiles
-            .Where(p => p.UserId == request.UserId)
+            .Where(p => p.Id == request.ProfileId)
             .Select(p => new GetProfileQueryResponse
             {
                 Id = p.Id,
                 Username = p.Username,
                 Bio = p.Bio,
-                AvatarUrl = p.AvatarUrl
+                AvatarUrl = p.AvatarUrl,
+                Games = p.UserGames
+                    .Select(ug => new GameDto()
+                    {
+                        Id = ug.GameId,
+                        Name = ug.GameCatalog.GameName,
+                        CoverImageUrl = ug.GameCatalog.CoverImageUrl,
+                        Rank = ug.Rank,
+                        Role = ug.Role
+                    })
+                    .ToList()
             })
             .FirstOrDefaultAsync(cancellationToken);
 

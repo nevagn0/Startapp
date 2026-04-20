@@ -24,7 +24,7 @@ public class UserGameService : IUserGameService
     }
 
     public async Task<ErrorOr<Unit>> AddGameToUserAsync(
-        Guid userId,
+        Guid profileId,
         AddGameToUserRequest request,
         CancellationToken cancellationToken = default)
     {
@@ -32,26 +32,20 @@ public class UserGameService : IUserGameService
         if (game == null)
             return Error.NotFound("Game.NotFound", $"Game with ID '{request.GameId}' not found");
 
-        var profile = await _profileRepository.GetByUserIdAsync(userId, cancellationToken);
-
-        if (profile.IsError)
-        {
-            return profile.Errors;
-        }
         if (string.IsNullOrWhiteSpace(request.Role))
             return Error.Validation("Role.Required", "Role is required");
 
         if (string.IsNullOrWhiteSpace(request.Rank))
             return Error.Validation("Rank.Required", "Rank is required");
 
-        var userGame = new UserGame(profile.Value.Id, request.GameId, request.Role, request.Rank);
+        var userGame = new UserGame(profileId, request.GameId, request.Role, request.Rank);
         await _userGameRepository.AddAsync(userGame, cancellationToken);
 
         return Unit.Value;
     }
 
     public async Task<ErrorOr<Unit>> UpdateUserGameAsync(
-        Guid userId,
+        Guid profileId,
         Guid userGameId,
         UpdateUserGameRequest request,
         CancellationToken cancellationToken = default)
@@ -61,14 +55,7 @@ public class UserGameService : IUserGameService
         if (userGame == null)
             return Error.NotFound("UserGame.NotFound", $"User game with ID '{userGameId}' not found");
 
-        var profile = await _profileRepository.GetByUserIdAsync(userId, cancellationToken);
-
-        if (profile.IsError)
-        {
-            return profile.Errors;
-        }
-
-        if (userGame.ProfileId != profile.Value.Id)
+        if (userGame.ProfileId != profileId)
             return Error.Unauthorized("UserGame.Unauthorized", "You don't have permission to update this game");
 
         if (string.IsNullOrWhiteSpace(request.Role))
@@ -84,7 +71,7 @@ public class UserGameService : IUserGameService
     }
 
     public async Task<ErrorOr<Unit>> DeleteUserGameAsync(
-        Guid userId,
+        Guid profileId,
         Guid userGameId,
         CancellationToken cancellationToken = default)
     {
@@ -92,14 +79,7 @@ public class UserGameService : IUserGameService
         if (userGame == null)
             return Error.NotFound("UserGame.NotFound", $"User game with ID '{userGameId}' not found");
 
-        var profile = await _profileRepository.GetByUserIdAsync(userId, cancellationToken);
-
-        if (profile.IsError)
-        {
-            return profile.Errors;
-        }
-
-        if (userGame.ProfileId != profile.Value.Id)
+        if (userGame.ProfileId != profileId)
             return Error.Unauthorized("UserGame.Unauthorized", "You don't have permission to delete this game");
 
         await _userGameRepository.DeleteAsync(userGameId, cancellationToken);
@@ -108,17 +88,10 @@ public class UserGameService : IUserGameService
     }
 
     public async Task<ErrorOr<IEnumerable<UserGameResponse>>> GetUserGamesAsync(
-        Guid userId,
+        Guid profileId,
         CancellationToken cancellationToken = default)
     {
-        var profile = await _profileRepository.GetByUserIdAsync(userId, cancellationToken);
-
-        if (profile.IsError)
-        {
-            return profile.Errors;
-        }
-
-        var userGames = await _userGameRepository.GetByUserIdAsync(profile.Value.Id, cancellationToken);
+        var userGames = await _userGameRepository.GetByProfileIdAsync(profileId, cancellationToken);
 
         var response = userGames.Select(ug => new UserGameResponse(
             ug.Id,

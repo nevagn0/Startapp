@@ -2,11 +2,15 @@
 using Jilo.App.Api.Authorization;
 using Jilo.App.Api.Authorization.Handlers;
 using Jilo.App.Api.Authorization.Requirements;
+using Jilo.App.Application.Common.Repositories;
+using Jilo.App.Application.Common.Services;
+using Jilo.App.Application.Services;
 using Jilo.App.Applicatoin.Behaviors;
 using Jilo.App.Applicatoin.Common.Repositories;
 using Jilo.App.Applicatoin.Common.Services;
 using Jilo.App.Infrastructure.Persistence;
 using Jilo.App.Infrastructure.Persistence.Repositories;
+using Jilo.App.Infrastructure.Repositories;
 using Jilo.App.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -113,6 +117,8 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IProfileRepository, ProfileRepository>();
+        services.AddScoped<IGameRepository, GameRepository>();
+        services.AddScoped<IUserGameRepository, UserGameRepository>();
 
         return services;
     }
@@ -141,6 +147,13 @@ public static class DependencyInjection
             .AddPolicy(PolicyNames.ProfileOwner, policy => policy.AddRequirements(new ProfileOwnerRequirement()));
 
         services.AddTransient<IAuthorizationHandler, ProfileOwnerRequirementHandler>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddServices(this IServiceCollection services)
+    {
+        services.AddScoped<IUserGameService, UserGameService>();
 
         return services;
     }

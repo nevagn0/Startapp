@@ -9,5 +9,5 @@ public interface IUserGameRepository
     Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
 
     Task<UserGame?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
-    Task<IEnumerable<UserGame>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<UserGame>> GetByProfileIdAsync(Guid userId, CancellationToken cancellationToken = default);
 }
