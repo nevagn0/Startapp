@@ -15,38 +15,38 @@ public static class GamesSeeder
                 new Game(
                     Guid.Parse("475a01ab-e832-4563-bd28-b84861470517"),
                     "Counter-Strike 2",
-                    "Legendary tactical shooter game",
-                    "/images/games/cs2.jpg"
+                    "/images/games/cs2.jpg",
+                    "Legendary tactical shooter game"
                 ),
                 new Game(
                     Guid.Parse("ac3315c0-2592-48bf-9a5f-83d19071efd2"),
                     "Dota 2",
-                    "Multiplayer online battle arena game",
-                    "/images/games/dota2.jpg"
+                    "/images/games/dota2.jpg",
+                    "Multiplayer online battle arena game"
                 ),
                 new Game(
                     Guid.Parse("9a01c5f8-e26b-4e9c-a98d-b2097db55f32"),
                     "Valorant",
-                    "Tactical hero shooter game",
-                    "/images/games/valorant.jpg"
+                    "/images/games/valorant.jpg",
+                    "Tactical hero shooter game"
                 ),
                 new Game(
                     Guid.Parse("411393c4-55cd-448d-9da1-612b0142d9d5"),
                     "League of Legends",
-                    "MOBA game with strategic gameplay",
-                    "/images/games/lol.jpg"
+                    "/images/games/lol.jpg",
+                    "MOBA game with strategic gameplay"
                 ),
                 new Game(
                     Guid.Parse("acdff89d-6f7d-41b1-ba78-0c765e64326e"),
                     "Apex Legends",
-                    "Battle royale hero shooter",
-                    "/images/games/apex.jpg"
+                    "/images/games/apex.jpg",
+                    "Battle royale hero shooter"
                 ),
                 new Game(
                     Guid.NewGuid(),
                     "PUBG",
-                    "126RUS",
-                    "/images/games/pubg.jpg"
+                    "/images/games/pubg.jpg",
+                    "126RUS"
                 )
             };
 
