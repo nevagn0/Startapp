@@ -1,25 +1,28 @@
 ﻿using ErrorOr;
+using Jilo.App.Applicatoin.Common.Repositories;
 using Jilo.App.Applicatoin.Common.Services;
 using Jilo.App.Domain.Models;
 using Jilo.App.Domain.UserEntity;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+using System.Runtime.InteropServices;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace Jilo.App.Infrastructure.Security;
 
-public sealed class JwtTokenProvider(IOptions<JwtOptions> options) : ITokenProvider
+public sealed class JwtTokenProvider(IOptions<JwtOptions> options, IProfileRepository profileRepo) : ITokenProvider
 {
     private readonly JwtOptions _options = options.Value;
 
-    public ErrorOr<TokenPair> GetTokensForUser(User user)
+    public async Task<ErrorOr<TokenPair>> GetTokensForUser(User user)
     {
         try
         {
-            var accessToken = GetAccessToken(user);
+            var accessToken = await GetAccessToken(user);
             var refreshToken = GetRefreshToken();
 
             return new TokenPair(accessToken, refreshToken);
@@ -32,8 +35,14 @@ public sealed class JwtTokenProvider(IOptions<JwtOptions> options) : ITokenProvi
         }
     }
 
-    private string GetAccessToken(User user)
+    private async Task<string> GetAccessToken(User user)
     {
+        var profile = await profileRepo.GetByUserIdAsync(user.Id);
+        if (profile.IsError)
+        {
+            throw new Exception("Profile not found");
+        }
+
         var key = Encoding.UTF8.GetBytes(_options.Key);
         var tokenHandler = new JsonWebTokenHandler();
 
@@ -42,6 +51,7 @@ public sealed class JwtTokenProvider(IOptions<JwtOptions> options) : ITokenProvi
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new(JwtRegisteredClaimNames.Email, user.Email.ToString()),
             new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new(JwtRegisteredClaimNames.Profile, profile.Value.Id.ToString()),  
             new(ClaimTypes.Role, user.Role.ToString())
         };
 

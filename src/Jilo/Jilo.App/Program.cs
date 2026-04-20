@@ -1,22 +1,30 @@
 using Jilo.App.Extensions;
 using Jilo.App.Infrastructure.Persistence;
+using Jilo.App.Infrastructure.Persistence.Seeders;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
-using System.Numerics;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddServiceContext(builder.Configuration);
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddRepositories();
+
+builder.Services.AddServices();
 
 builder.Services.AddSecurity();
 
 builder.Services.AddJwtTokens(builder.Configuration);
 
+builder.Services.AddJwtBearerAuthentication(builder.Configuration);
+
 builder.Services.AddMediatR();
 
 builder.Services.AddValidators();
+
+builder.Services.AddAuthorizationPolicies();
 
 builder.Services.AddControllers();
 
@@ -32,9 +40,14 @@ if (app.Environment.IsDevelopment())
     using var scope = app.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<ServiceContext>();
     context.Database.Migrate();
+    await GamesSeeder.InitializeAsync(context);
 }
 
+app.UseStaticFiles();
+
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

@@ -1,5 +1,5 @@
 ﻿using ErrorOr;
-using Jilo.App.Api.Dto;
+using Jilo.App.Api.Dto.Auth;
 using Jilo.App.Applicatoin.Features.Auth.Login;
 using Jilo.App.Applicatoin.Features.Auth.Logout;
 using Jilo.App.Applicatoin.Features.Auth.Refresh;

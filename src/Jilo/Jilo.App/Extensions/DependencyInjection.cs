@@ -1,12 +1,23 @@
 ﻿using FluentValidation;
+using Jilo.App.Api.Authorization;
+using Jilo.App.Api.Authorization.Handlers;
+using Jilo.App.Api.Authorization.Requirements;
+using Jilo.App.Application.Common.Repositories;
+using Jilo.App.Application.Common.Services;
+using Jilo.App.Application.Services;
 using Jilo.App.Applicatoin.Behaviors;
 using Jilo.App.Applicatoin.Common.Repositories;
 using Jilo.App.Applicatoin.Common.Services;
 using Jilo.App.Infrastructure.Persistence;
 using Jilo.App.Infrastructure.Persistence.Repositories;
+using Jilo.App.Infrastructure.Repositories;
 using Jilo.App.Infrastructure.Security;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Jilo.App.Extensions;
 
@@ -41,6 +52,46 @@ public static class DependencyInjection
         return services;
     }
 
+    public static IServiceCollection AddJwtBearerAuthentication(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services
+            .AddAuthentication(cfg =>
+            {
+                cfg.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                cfg.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(cfg =>
+            {
+                cfg.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidIssuer = configuration["JwtOptions:Issuer"],
+                    ValidAudience = configuration["JwtOptions:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtOptions:Key"]!)),
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidateLifetime = true
+                };
+                cfg.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        if (context.Request.Cookies.TryGetValue("access_token", out var token))
+                        {
+                            context.Token = token;
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
+        services.AddAuthorization();
+
+        return services;
+    }
+
     public static IServiceCollection AddMediatR(this IServiceCollection services)
     {
         services.AddMediatR(cfg =>
@@ -65,6 +116,9 @@ public static class DependencyInjection
     {
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<IProfileRepository, ProfileRepository>();
+        services.AddScoped<IGameRepository, GameRepository>();
+        services.AddScoped<IUserGameRepository, UserGameRepository>();
 
         return services;
     }
@@ -83,6 +137,23 @@ public static class DependencyInjection
                 context.ProblemDetails.Extensions.TryAdd("traceId", activity?.Id);
             };
         });
+
+        return services;
+    }
+
+    public static IServiceCollection AddAuthorizationPolicies(this IServiceCollection services)
+    {
+        services.AddAuthorizationBuilder()
+            .AddPolicy(PolicyNames.ProfileOwner, policy => policy.AddRequirements(new ProfileOwnerRequirement()));
+
+        services.AddTransient<IAuthorizationHandler, ProfileOwnerRequirementHandler>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddServices(this IServiceCollection services)
+    {
+        services.AddScoped<IUserGameService, UserGameService>();
 
         return services;
     }

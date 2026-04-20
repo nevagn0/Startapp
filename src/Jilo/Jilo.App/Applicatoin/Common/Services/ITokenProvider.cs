@@ -6,5 +6,5 @@ namespace Jilo.App.Applicatoin.Common.Services;
 
 public interface ITokenProvider
 {
-    ErrorOr<TokenPair> GetTokensForUser(User user);
+    Task<ErrorOr<TokenPair>> GetTokensForUser(User user);
 }

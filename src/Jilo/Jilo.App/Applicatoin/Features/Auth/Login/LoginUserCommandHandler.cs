@@ -30,7 +30,7 @@ public sealed class LoginUserCommandHandler(
             return Errors.Auth.Unauthorized;
         }
 
-        var tokenPair = tokenProvider.GetTokensForUser(user.Value);
+        var tokenPair = await tokenProvider.GetTokensForUser(user.Value);
 
         if (tokenPair.IsError)
         {

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Jilo.App.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ServiceContext))]
-    [Migration("20260418084544_ProfileEntity")]
-    partial class ProfileEntity
+    [Migration("20260420070452_Entities")]
+    partial class Entities
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,68 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Jilo.App.Domain.Entities.UserGame", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("AddedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("GameId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ProfileId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Rank")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameId");
+
+                    b.HasIndex("ProfileId", "GameId")
+                        .IsUnique();
+
+                    b.ToTable("UserGames");
+                });
+
+            modelBuilder.Entity("Jilo.App.Domain.GameEntity.Game", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CoverImageUrl")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("GameName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameName")
+                        .IsUnique();
+
+                    b.ToTable("Games", (string)null);
+                });
+
             modelBuilder.Entity("Jilo.App.Domain.UserEntity.Profile", b =>
                 {
                     b.Property<Guid>("Id")
@@ -35,7 +97,6 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Bio")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<Guid>("UserId")
@@ -53,7 +114,7 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Profile");
+                    b.ToTable("Profiles");
                 });
 
             modelBuilder.Entity("Jilo.App.Domain.UserEntity.RefreshToken", b =>
@@ -127,6 +188,25 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Jilo.App.Domain.Entities.UserGame", b =>
+                {
+                    b.HasOne("Jilo.App.Domain.GameEntity.Game", "GameCatalog")
+                        .WithMany("UserGames")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Jilo.App.Domain.UserEntity.Profile", "Profile")
+                        .WithMany("UserGames")
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GameCatalog");
+
+                    b.Navigation("Profile");
+                });
+
             modelBuilder.Entity("Jilo.App.Domain.UserEntity.Profile", b =>
                 {
                     b.HasOne("Jilo.App.Domain.UserEntity.User", "User")
@@ -147,6 +227,16 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Jilo.App.Domain.GameEntity.Game", b =>
+                {
+                    b.Navigation("UserGames");
+                });
+
+            modelBuilder.Entity("Jilo.App.Domain.UserEntity.Profile", b =>
+                {
+                    b.Navigation("UserGames");
                 });
 
             modelBuilder.Entity("Jilo.App.Domain.UserEntity.User", b =>
