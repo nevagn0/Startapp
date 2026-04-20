@@ -25,5 +25,7 @@ public record AvailableGameResponse(
     Guid Id,
     string GameName,
     string Description,
-    string CoverImageUrl
+    string CoverImageUrl,
+    List<string> Roles,
+    List<string> Rangs
 );

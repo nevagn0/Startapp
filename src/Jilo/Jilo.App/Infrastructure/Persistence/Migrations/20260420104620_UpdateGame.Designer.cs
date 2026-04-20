@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Jilo.App.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Jilo.App.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ServiceContext))]
-    partial class ServiceContextModelSnapshot : ModelSnapshot
+    [Migration("20260420104620_UpdateGame")]
+    partial class UpdateGame
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,10 +80,10 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.PrimitiveCollection<List<string>>("Ranks")
+                    b.PrimitiveCollection<List<string>>("Rang")
                         .HasColumnType("text[]");
 
-                    b.PrimitiveCollection<List<string>>("Roles")
+                    b.PrimitiveCollection<List<string>>("Role")
                         .HasColumnType("text[]");
 
                     b.HasKey("Id");

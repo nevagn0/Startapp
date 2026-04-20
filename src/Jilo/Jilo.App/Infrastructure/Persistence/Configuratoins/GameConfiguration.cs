@@ -20,6 +20,14 @@ public sealed class GameConfiguration : IEntityTypeConfiguration<Game>
             .IsRequired()
             .HasMaxLength(500);
 
+        builder.Property(g => g.Roles)
+            .HasColumnType("text[]")
+            .IsRequired(false);
+
+        builder.Property(g => g.Ranks)
+            .HasColumnType("text[]")
+            .IsRequired(false);
+
         builder.Property(x => x.CoverImageUrl)
             .HasMaxLength(500);
 

@@ -1,6 +1,10 @@
+using Jilo.App.Application.Common.Services;
+using Jilo.App.Application.Services;
+using Jilo.App.Applicatoin.DTO;
 using Jilo.App.Extensions;
 using Jilo.App.Infrastructure.Persistence;
 using Jilo.App.Infrastructure.Persistence.Seeders;
+using Jilo.App.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -27,7 +31,8 @@ builder.Services.AddValidators();
 builder.Services.AddAuthorizationPolicies();
 
 builder.Services.AddControllers();
-
+builder.Services.AddScoped<IPlayerSearchService, PlayerSearchService>();
+builder.Services.AddScoped<IPlayerSearchRepository, PlayerSearchRepository>();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
