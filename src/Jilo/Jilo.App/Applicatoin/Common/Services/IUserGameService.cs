@@ -1,4 +1,5 @@
 ﻿using ErrorOr;
+using Jilo.App.Applicatoin.DTO;
 using MediatR;
 
 namespace Jilo.App.Application.Common.Services;
@@ -13,6 +14,8 @@ public interface IUserGameService
     // Получение игр пользователя
     Task<ErrorOr<IEnumerable<UserGameResponse>>> GetUserGamesAsync(Guid profileId, CancellationToken cancellationToken = default);
 
-
+    // Игры
     Task<ErrorOr<IEnumerable<AvailableGameResponse>>> GetAvailableGamesAsync(CancellationToken cancellationToken = default);
+
+    Task<ErrorOr<GameDto>> GetGameAsync(Guid gameId, CancellationToken cancellationToken = default);
 }

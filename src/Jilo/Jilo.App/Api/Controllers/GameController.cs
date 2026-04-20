@@ -1,14 +1,12 @@
 ﻿using ErrorOr;
 using Jilo.App.Application.Common.Services;
-using Microsoft.AspNetCore.Authorization;
+using Jilo.App.Applicatoin.DTO;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace Jilo.App.API.Controllers;
 
 [ApiController]
-[Route("api/user/games")]
-[Authorize]
+[Route("api/v1/games/")]
 public class GameController : ControllerBase
 {
     private readonly IUserGameService _userGameService;
@@ -18,9 +16,10 @@ public class GameController : ControllerBase
         _userGameService = userGameService;
     }
 
-    [HttpGet("games")]
-    [AllowAnonymous]
-    public async Task<IActionResult> GetAllGames(CancellationToken cancellationToken)
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> ListAsync(CancellationToken cancellationToken)
     {
         var result = await _userGameService.GetAvailableGamesAsync(cancellationToken);
 
@@ -30,28 +29,28 @@ public class GameController : ControllerBase
         );
     }
 
-
-    [HttpGet("UserGame")]
-    public async Task<IActionResult> GetMyGames(CancellationToken cancellationToken)
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<GameDto>> GetAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var userId = GetUserId();
-        var result = await _userGameService.GetUserGamesAsync(userId, cancellationToken);
+        var game = await _userGameService.GetGameAsync(id, cancellationToken);
 
-        return result.Match(
-            value => Ok(value),
-            errors => Problem(errors)
+        return game.MatchFirst(
+            onValue: value => Ok(value),
+            onFirstError: error => error.Type switch
+            {
+                ErrorType.NotFound => Problem(
+                    statusCode: StatusCodes.Status404NotFound,
+                    title: error.Code,
+                    detail: error.Description),
+                _ => Problem(
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: error.Code,
+                    detail: error.Description)
+            } 
         );
-    }
-
-    private Guid GetUserId()
-    {
-        var userIdClaim = User.FindFirst("sub")?.Value
-                          ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-        if (string.IsNullOrEmpty(userIdClaim))
-            throw new UnauthorizedAccessException("User ID not found in token");
-
-        return Guid.Parse(userIdClaim);
     }
 
     private IActionResult Problem(List<Error> errors)

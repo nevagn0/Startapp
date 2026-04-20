@@ -4,6 +4,8 @@ using Jilo.App.Application.Common.Repositories;
 using Jilo.App.Application.Common.Services;
 using Jilo.App.Domain.Entities;
 using Jilo.App.Applicatoin.Common.Repositories;
+using Jilo.App.Applicatoin.DTO;
+using Jilo.App.Domain;
 
 namespace Jilo.App.Application.Services;
 
@@ -11,16 +13,13 @@ public class UserGameService : IUserGameService
 {
     private readonly IUserGameRepository _userGameRepository;
     private readonly IGameRepository _gameRepository;
-    private readonly IProfileRepository _profileRepository;
 
     public UserGameService(
         IUserGameRepository userGameRepository,
-        IGameRepository gameRepository,
-        IProfileRepository profileRepository)
+        IGameRepository gameRepository)
     {
         _userGameRepository = userGameRepository;
         _gameRepository = gameRepository;
-        _profileRepository = profileRepository;
     }
 
     public async Task<ErrorOr<Unit>> AddGameToUserAsync(
@@ -122,4 +121,21 @@ public class UserGameService : IUserGameService
         return response.ToList();
     }
 
+    public async Task<ErrorOr<GameDto>> GetGameAsync(Guid gameId, CancellationToken cancellationToken = default)
+    {
+        var game = await _gameRepository.GetByIdAsync(gameId, cancellationToken);
+
+        if (game is null)
+        {
+            return Error.NotFound("Game.NotFound", $"Game with ID '{gameId}' not found");
+        }
+
+        return new GameDto()
+        {
+            Id = game.Id,
+            Name = game.GameName,
+            Description = game.Description,
+            CoverImageUrl = game.CoverImageUrl
+        };
+    }
 }
