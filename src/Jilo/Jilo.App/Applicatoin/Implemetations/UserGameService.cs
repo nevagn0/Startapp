@@ -115,7 +115,9 @@ public class UserGameService : IUserGameService
             g.Id,
             g.GameName,
             g.Description,
-            g.CoverImageUrl
+            g.CoverImageUrl,
+            g.Roles,
+            g.Ranks
         ));
 
         return response.ToList();
@@ -135,7 +137,9 @@ public class UserGameService : IUserGameService
             Id = game.Id,
             Name = game.GameName,
             Description = game.Description,
-            CoverImageUrl = game.CoverImageUrl
+            CoverImageUrl = game.CoverImageUrl, 
+            Roles = game.Roles,
+            Ranks = game.Ranks
         };
     }
 }

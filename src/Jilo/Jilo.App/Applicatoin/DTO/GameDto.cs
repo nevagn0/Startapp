@@ -9,4 +9,6 @@ public sealed class GameDto
     public required string Description { get; init; }
 
     public required string CoverImageUrl { get; init; }
+    public required List<string> Roles { get; init; }
+    public required List<string> Ranks { get; init; }
 }
