@@ -4,34 +4,31 @@ namespace Jilo.App.Domain;
 
 public static class Errors
 {
-    public static class Email
+    public static class Invitation
     {
-        public static Error AddressIsNullOrEmpty => Error.Validation(
-            code: "Email.AddressNullOrEmpty",
-            description: "Provided address is null or empty");
+        public static Error AlreadyProcessed => Error.Failure(
+            code: "Invitation.AlreadyProcessed",
+            description: "Invitaion is already processed");
 
-        public static Error InvalidLength(int minLength, int maxLength) => Error.Validation(
-            code: "Email.InvalidLength",
-            description: $"Address length must be from {minLength} to {maxLength}");
+        public static Error Expired => Error.Failure(
+            code: "Invitation.Expired",
+            description: "Invitation expired");
 
-        public static Error InvalidFormat => Error.Validation(
-            code: "Email.InvalidFormat",
-            description: "Invalid email address format");
-    }
+        public static Error NotAReciever => Error.Forbidden(
+            code: "Invitation.NotAReciever",
+            description: "User it not the reciever of the invitation");
 
-    public static class Username
-    {
-        public static Error NameIsNullOrEmpty => Error.Validation(
-            code: "Username.NameIsNullOrEmpty",
-            description: "Provided name is null or empty");
+        public static Error CannotCancel => Error.Failure(
+            code: "Invitation.CannotCancel",
+            description: "Invitation cannot be canceled");
 
-        public static Error InvalidLength(int minLength, int maxLength) => Error.Validation(
-            code: "Username.InvalidLength",
-            description: $"Name length must be from {minLength} to {maxLength}");
+        public static Error NotAnOwner => Error.Forbidden(
+            code: "Invitation.NotAnOwner",
+            description: "User is not an owner of the invitation");
 
-        public static Error ContainsNotAllowedSymbols(string notAllowedSymbols) => Error.Validation(
-            code: "Username.ContainsNotAllowedSymbols",
-            description: $"Provided name contains not allowed symbols. Not allowed symbols are: {notAllowedSymbols}");
+        public static Error NotFound => Error.NotFound(
+            code: "Invitation.NotFound",
+            description: "Invitation not found");
     }
 
     public static class User
@@ -80,5 +77,42 @@ public static class Errors
         public static Error NotFound => Error.NotFound(
             code: "Profile.NotFound",
             description: "Profile not found");
+    }
+
+    public static class Lobby
+    {
+        public static Error PendingInvitation => Error.Conflict(
+            code: "Lobby.PendingInvitation",
+            description: "User already invited to this lobby");
+
+        public static Error Full => Error.Failure(
+            code: "Lobby.Full",
+            description: "Lobby is already full");
+
+        public static Error AlreadyInLobby => Error.Conflict(
+            code: "Lobby.AlreadyInLobby",
+            description: "Lobby already has this member");
+
+        public static Error NotFound => Error.NotFound(
+            code: "Lobby.NotFound",
+            description: "Lobby not found");
+
+        public static Error NotAMemberOfLobby => Error.Failure(
+            code: "Lobby.NotAPartOfLobby",
+            description: "User is not a member of the lobby");
+    }
+
+    public static class Game
+    {
+        public static Error NotFound => Error.NotFound(
+            code: "Game.NotFound",
+            description: "Game not found");
+    }
+
+    public static class LobbyMember
+    {
+        public static Error NotFound => Error.NotFound(
+            code: "LobbyMember.NotFound",
+            description: "Lobby member not found");
     }
 }

@@ -119,6 +119,9 @@ public static class DependencyInjection
         services.AddScoped<IProfileRepository, ProfileRepository>();
         services.AddScoped<IGameRepository, GameRepository>();
         services.AddScoped<IUserGameRepository, UserGameRepository>();
+        services.AddScoped<ILobbyRepository, LobbyRepository>();
+        services.AddScoped<ILobbyMemberRepository, LobbyMemberRepository>();
+        services.AddScoped<IInvitationRepository, InvitationRepository>();
 
         return services;
     }
@@ -144,9 +147,11 @@ public static class DependencyInjection
     public static IServiceCollection AddAuthorizationPolicies(this IServiceCollection services)
     {
         services.AddAuthorizationBuilder()
-            .AddPolicy(PolicyNames.ProfileOwner, policy => policy.AddRequirements(new ProfileOwnerRequirement()));
+            .AddPolicy(PolicyNames.ProfileOwner, policy => policy.AddRequirements(new ProfileOwnerRequirement()))
+            .AddPolicy(PolicyNames.LobbyOwner, policy => policy.AddRequirements(new LobbyOwnerRequirement()));
 
         services.AddTransient<IAuthorizationHandler, ProfileOwnerRequirementHandler>();
+        services.AddTransient<IAuthorizationHandler, LobbyOwnerRequirementHandler>();
 
         return services;
     }
