@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Jilo.App.Applicatoin.DTO;
-using Jilo.App.Infrastructure.Persistence;
+using Jilo.App.Application.Common.Repositories;
+using Jilo.App.Application.DTO;
 
-namespace Jilo.App.Infrastructure.Repositories;
+namespace Jilo.App.Infrastructure.Persistence.Repositories;
 
 public class PlayerSearchRepository : IPlayerSearchRepository
 {
@@ -38,14 +38,14 @@ public class PlayerSearchRepository : IPlayerSearchRepository
         {
             query = query.Where(ug =>
                 ug.Profile.Username.Contains(request.Query) ||
-                ug.Profile.Bio.Contains(request.Query));
+                (ug.Profile.Bio != null && ug.Profile.Bio.Contains(request.Query)));
         }
 
         var results = await query
             .Select(ug => new PlayerSearchResponse(
                 ug.Profile.UserId,
                 ug.Profile.Username,
-                ug.Profile.Bio,
+                ug.Profile.Bio ?? string.Empty,
                 ug.Profile.AvatarUrl,
                 ug.Profile.Rating,
                 ug.GameCatalog.GameName,

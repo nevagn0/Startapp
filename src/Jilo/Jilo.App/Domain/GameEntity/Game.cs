@@ -1,4 +1,4 @@
-﻿using Jilo.App.Domain.Entities;
+using Jilo.App.Domain.LobbyEntity;
 
 namespace Jilo.App.Domain.GameEntity
 {
@@ -18,12 +18,15 @@ namespace Jilo.App.Domain.GameEntity
 
         public ICollection<UserGame> UserGames { get; set; } = null!;
 
+        public ICollection<Lobby> Lobbies { get; private set; }
+        
         public Game(Guid id, string gameName, string coverImageUrl, string description, List<string> roles, List<string> ranks)
         {
             Id = id;
             GameName = gameName;
             Description = description;
             CoverImageUrl = coverImageUrl;
+            Lobbies = [];
             Roles = roles;
             Ranks = ranks;
         }

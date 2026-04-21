@@ -1,4 +1,4 @@
-﻿using Jilo.App.Applicatoin.Common.Services;
+﻿using Jilo.App.Application.Common.Services;
 using System.Security.Cryptography;
 using System.Text;
 

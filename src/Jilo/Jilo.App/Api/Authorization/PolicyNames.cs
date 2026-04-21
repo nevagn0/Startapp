@@ -3,4 +3,6 @@
 public static class PolicyNames
 {
     public const string ProfileOwner = "ProfileOwner";
+
+    public const string LobbyOwner = "LobbyOwner";
 }

@@ -1,5 +1,5 @@
-﻿using Jilo.App.Domain.Entities;
-using Jilo.App.Domain.GameEntity;
+﻿using Jilo.App.Domain.GameEntity;
+using Jilo.App.Domain.LobbyEntity;
 
 namespace Jilo.App.Domain.UserEntity;
 
@@ -19,7 +19,12 @@ public sealed class Profile
 
     public User User { get; private init; } = null!;
 
-    public ICollection<UserGame> UserGames { get; private set; } = null!;
+    public ICollection<UserGame> UserGames { get; private set; }
+
+    public ICollection<Lobby> CreatedLobbies { get; private set; }
+
+    public ICollection<LobbyMember> LobbyMemberships { get; private set; }
+
     public int Rating => _rating;
 
     public Profile(Guid userId, string username, string? bio = null, string? avatarUrl = null)
@@ -30,6 +35,9 @@ public sealed class Profile
         Bio = bio;
         _rating = 0;
         AvatarUrl = avatarUrl;
+        UserGames = [];
+        CreatedLobbies = [];
+        LobbyMemberships = [];
     }
 
     public void IncreaseRating()

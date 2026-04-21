@@ -1,8 +1,8 @@
-﻿using Jilo.App.Domain.Entities;
+﻿using Jilo.App.Domain.GameEntity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Jilo.App.Infrastructure.Persistence.Configurations;
+namespace Jilo.App.Infrastructure.Persistence.Configuratoins;
 
 public sealed class UserGameConfiguration : IEntityTypeConfiguration<UserGame>
 {

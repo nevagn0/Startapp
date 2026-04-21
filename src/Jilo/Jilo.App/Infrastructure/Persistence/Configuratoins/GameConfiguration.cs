@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Jilo.App.Infrastructure.Persistence.Configurations;
+namespace Jilo.App.Infrastructure.Persistence.Configuratoins;
 
 public sealed class GameConfiguration : IEntityTypeConfiguration<Game>
 {

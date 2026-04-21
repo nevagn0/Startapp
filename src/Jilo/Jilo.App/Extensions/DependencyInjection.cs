@@ -2,15 +2,12 @@
 using Jilo.App.Api.Authorization;
 using Jilo.App.Api.Authorization.Handlers;
 using Jilo.App.Api.Authorization.Requirements;
+using Jilo.App.Application.Behaviors;
 using Jilo.App.Application.Common.Repositories;
 using Jilo.App.Application.Common.Services;
-using Jilo.App.Application.Services;
-using Jilo.App.Applicatoin.Behaviors;
-using Jilo.App.Applicatoin.Common.Repositories;
-using Jilo.App.Applicatoin.Common.Services;
+using Jilo.App.Application.Implementations;
 using Jilo.App.Infrastructure.Persistence;
 using Jilo.App.Infrastructure.Persistence.Repositories;
-using Jilo.App.Infrastructure.Repositories;
 using Jilo.App.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -119,6 +116,9 @@ public static class DependencyInjection
         services.AddScoped<IProfileRepository, ProfileRepository>();
         services.AddScoped<IGameRepository, GameRepository>();
         services.AddScoped<IUserGameRepository, UserGameRepository>();
+        services.AddScoped<ILobbyRepository, LobbyRepository>();
+        services.AddScoped<ILobbyMemberRepository, LobbyMemberRepository>();
+        services.AddScoped<IInvitationRepository, InvitationRepository>();
 
         return services;
     }
@@ -144,9 +144,11 @@ public static class DependencyInjection
     public static IServiceCollection AddAuthorizationPolicies(this IServiceCollection services)
     {
         services.AddAuthorizationBuilder()
-            .AddPolicy(PolicyNames.ProfileOwner, policy => policy.AddRequirements(new ProfileOwnerRequirement()));
+            .AddPolicy(PolicyNames.ProfileOwner, policy => policy.AddRequirements(new ProfileOwnerRequirement()))
+            .AddPolicy(PolicyNames.LobbyOwner, policy => policy.AddRequirements(new LobbyOwnerRequirement()));
 
         services.AddTransient<IAuthorizationHandler, ProfileOwnerRequirementHandler>();
+        services.AddTransient<IAuthorizationHandler, LobbyOwnerRequirementHandler>();
 
         return services;
     }

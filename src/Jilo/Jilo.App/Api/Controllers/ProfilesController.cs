@@ -2,9 +2,10 @@
 using Jilo.App.Api.Authorization;
 using Jilo.App.Api.Dto.Profiles;
 using Jilo.App.Application.Common.Services;
-using Jilo.App.Applicatoin.Features.Profiles.Get;
-using Jilo.App.Applicatoin.Features.Profiles.Update;
-using Jilo.App.Applicatoin.Features.Profiles.UpdateAvatar;
+using Jilo.App.Application.DTO;
+using Jilo.App.Application.Features.Profiles.Get;
+using Jilo.App.Application.Features.Profiles.Update;
+using Jilo.App.Application.Features.Profiles.UpdateAvatar;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -180,7 +181,7 @@ public sealed class ProfilesController(IMediator mediator, IUserGameService user
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetMyGamesAsync(CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<UserGameResponse>>> GetMyGamesAsync(CancellationToken cancellationToken)
     {
         var profileIdStr = HttpContext.User.FindFirst(JwtRegisteredClaimNames.Profile)?.Value;
 
@@ -189,12 +190,17 @@ public sealed class ProfilesController(IMediator mediator, IUserGameService user
             return Problem(statusCode: StatusCodes.Status401Unauthorized);
         }
 
-        var result = await userGameService.GetUserGamesAsync(profileId, cancellationToken);
+        var userGames = await userGameService.GetUserGamesAsync(profileId, cancellationToken);
 
-        return result.Match(
-            value => Ok(value),
-            errors => Problem(errors)
-        );
+        return userGames.MatchFirst<ActionResult>(
+            onValue: value => Ok(),
+            onFirstError: error => error.Type switch
+            {
+                _ => Problem(
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: error.Code,
+                    detail: $"Unexpected error. Details: {error.Description}")
+            });
     }
 
     [Authorize]

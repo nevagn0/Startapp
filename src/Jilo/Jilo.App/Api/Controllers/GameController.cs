@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
 using Jilo.App.Application.Common.Services;
-using Jilo.App.Applicatoin.DTO;
+using Jilo.App.Application.DTO;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Jilo.App.API.Controllers;
@@ -19,14 +19,19 @@ public class GameController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> ListAsync(CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<AvailableGameResponse>>> ListAsync(CancellationToken cancellationToken)
     {
-        var result = await _userGameService.GetAvailableGamesAsync(cancellationToken);
+        var availableGames = await _userGameService.GetAvailableGamesAsync(cancellationToken);
 
-        return result.Match(
-            value => Ok(value),
-            errors => Problem(errors)
-        );
+        return availableGames.MatchFirst<ActionResult>(
+            onValue: value => Ok(value),
+            onFirstError: error => error.Type switch
+            {
+                _ => Problem(
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: error.Code,
+                    detail: $"Unexpected error. Details: {error.Description}")
+            });
     }
 
     [HttpGet("{id:guid}")]
@@ -50,26 +55,6 @@ public class GameController : ControllerBase
                     title: error.Code,
                     detail: error.Description)
             } 
-        );
-    }
-
-    private IActionResult Problem(List<Error> errors)
-    {
-        var firstError = errors[0];
-        var statusCode = firstError.Type switch
-        {
-            ErrorType.NotFound => StatusCodes.Status404NotFound,
-            ErrorType.Conflict => StatusCodes.Status409Conflict,
-            ErrorType.Validation => StatusCodes.Status400BadRequest,
-            ErrorType.Unauthorized => StatusCodes.Status401Unauthorized,
-            ErrorType.Forbidden => StatusCodes.Status403Forbidden,
-            _ => StatusCodes.Status500InternalServerError
-        };
-
-        return Problem(
-            title: firstError.Code,
-            detail: firstError.Description,
-            statusCode: statusCode
         );
     }
 }

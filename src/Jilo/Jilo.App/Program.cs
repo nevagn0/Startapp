@@ -1,10 +1,10 @@
+using Jilo.App.Application.Common.Repositories;
 using Jilo.App.Application.Common.Services;
-using Jilo.App.Application.Services;
-using Jilo.App.Applicatoin.DTO;
+using Jilo.App.Application.Implementations;
 using Jilo.App.Extensions;
 using Jilo.App.Infrastructure.Persistence;
+using Jilo.App.Infrastructure.Persistence.Repositories;
 using Jilo.App.Infrastructure.Persistence.Seeders;
-using Jilo.App.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 

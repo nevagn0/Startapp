@@ -1,9 +1,9 @@
 ﻿using ErrorOr;
 using Jilo.App.Api.Dto.Auth;
-using Jilo.App.Applicatoin.Features.Auth.Login;
-using Jilo.App.Applicatoin.Features.Auth.Logout;
-using Jilo.App.Applicatoin.Features.Auth.Refresh;
-using Jilo.App.Applicatoin.Features.Auth.Register;
+using Jilo.App.Application.Features.Auth.Login;
+using Jilo.App.Application.Features.Auth.Logout;
+using Jilo.App.Application.Features.Auth.Refresh;
+using Jilo.App.Application.Features.Auth.Register;
 using Jilo.App.Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
