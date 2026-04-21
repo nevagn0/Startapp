@@ -19,6 +19,8 @@ public sealed class GetLobbyQueryHandler(
                 Id = l.Id,
                 GameId = l.GameId,
                 CreatedAtUtc = l.CreatedAtUtc,
+                IsActive = l.IsActive,
+                IsRatingAvailable = l.IsRatingAvailable,
                 Members = l.Members
                     .Select(m => new LobbyMemberDto
                     {

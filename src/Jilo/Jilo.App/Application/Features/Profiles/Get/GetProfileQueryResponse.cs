@@ -10,5 +10,7 @@ public sealed record GetProfileQueryResponse
     
     public required string? AvatarUrl { get; init; }
 
+    public required int Rating { get; init; }
+
     public required List<GameDto> Games { get; init; }
 }

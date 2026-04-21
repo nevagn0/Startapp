@@ -1,6 +1,7 @@
 ﻿using Jilo.App.Domain.GameEntity;
 using Jilo.App.Domain.InvitationEntity;
 using Jilo.App.Domain.LobbyEntity;
+using Jilo.App.Domain.RatingEntity;
 using Jilo.App.Domain.UserEntity;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +24,8 @@ public sealed class ServiceContext : DbContext
     public DbSet<LobbyMember> LobbyMembers => Set<LobbyMember>();
 
     public DbSet<Invitation> Invitations => Set<Invitation>();
+
+    public DbSet<Rating> Ratings => Set<Rating>();
 
     public ServiceContext(DbContextOptions<ServiceContext> options)
         : base(options)

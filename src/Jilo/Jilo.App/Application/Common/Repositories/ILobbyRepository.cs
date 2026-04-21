@@ -9,8 +9,6 @@ public interface ILobbyRepository
 
     Task<bool> AnyActiveWithMemberAsync(Guid profileId, CancellationToken cancellationToken = default);
 
-    Task<bool> AnyActiveWithOwnerAsync(Guid profileId, CancellationToken cancellationToken = default);
-
     void Add(Lobby lobby);
 
     void Delete(Lobby lobby);

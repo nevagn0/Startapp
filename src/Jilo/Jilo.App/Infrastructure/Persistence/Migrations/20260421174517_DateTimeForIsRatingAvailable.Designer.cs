@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Jilo.App.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Jilo.App.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ServiceContext))]
-    partial class ServiceContextModelSnapshot : ModelSnapshot
+    [Migration("20260421174517_DateTimeForIsRatingAvailable")]
+    partial class DateTimeForIsRatingAvailable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -202,39 +205,6 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
                     b.ToTable("LobbyMembers");
                 });
 
-            modelBuilder.Entity("Jilo.App.Domain.RatingEntity.Rating", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAtUtc")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("LobbyId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("RaterProfileId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("TargetProfileId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Value")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RaterProfileId");
-
-                    b.HasIndex("TargetProfileId");
-
-                    b.HasIndex("LobbyId", "RaterProfileId", "TargetProfileId")
-                        .IsUnique();
-
-                    b.ToTable("Ratings");
-                });
-
             modelBuilder.Entity("Jilo.App.Domain.UserEntity.Profile", b =>
                 {
                     b.Property<Guid>("Id")
@@ -246,9 +216,6 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Bio")
                         .HasColumnType("text");
-
-                    b.Property<int>("Rating")
-                        .HasColumnType("integer");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -423,33 +390,6 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
                     b.Navigation("Profile");
                 });
 
-            modelBuilder.Entity("Jilo.App.Domain.RatingEntity.Rating", b =>
-                {
-                    b.HasOne("Jilo.App.Domain.LobbyEntity.Lobby", "Lobby")
-                        .WithMany("Ratings")
-                        .HasForeignKey("LobbyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Jilo.App.Domain.UserEntity.Profile", "RaterProfile")
-                        .WithMany()
-                        .HasForeignKey("RaterProfileId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Jilo.App.Domain.UserEntity.Profile", "TargetProfile")
-                        .WithMany()
-                        .HasForeignKey("TargetProfileId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Lobby");
-
-                    b.Navigation("RaterProfile");
-
-                    b.Navigation("TargetProfile");
-                });
-
             modelBuilder.Entity("Jilo.App.Domain.UserEntity.Profile", b =>
                 {
                     b.HasOne("Jilo.App.Domain.UserEntity.User", "User")
@@ -482,8 +422,6 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Jilo.App.Domain.LobbyEntity.Lobby", b =>
                 {
                     b.Navigation("Members");
-
-                    b.Navigation("Ratings");
                 });
 
             modelBuilder.Entity("Jilo.App.Domain.UserEntity.Profile", b =>

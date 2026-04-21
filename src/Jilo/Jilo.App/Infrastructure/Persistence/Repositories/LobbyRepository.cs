@@ -17,12 +17,7 @@ public sealed class LobbyRepository(ServiceContext context) : ILobbyRepository
     {
         return context.Lobbies
             .AnyAsync(l => l.Members
-                .Any(m => m.ProfileId == profileId), cancellationToken);
-    }
-
-    public Task<bool> AnyActiveWithOwnerAsync(Guid profileId, CancellationToken cancellationToken = default)
-    {
-        return context.Lobbies.AnyAsync(l => l.CreatedByProfileId == profileId, cancellationToken);
+                .Any(m => m.ProfileId == profileId && m.LeftAtUtc == null), cancellationToken);
     }
 
     public void Delete(Lobby lobby)
