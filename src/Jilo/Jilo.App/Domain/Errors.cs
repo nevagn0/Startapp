@@ -91,7 +91,7 @@ public static class Errors
 
         public static Error AlreadyInLobby => Error.Conflict(
             code: "Lobby.AlreadyInLobby",
-            description: "Lobby already has this member");
+            description: "User is already in lobby");
 
         public static Error NotFound => Error.NotFound(
             code: "Lobby.NotFound",
