@@ -119,6 +119,9 @@ public static class DependencyInjection
         services.AddScoped<ILobbyRepository, LobbyRepository>();
         services.AddScoped<ILobbyMemberRepository, LobbyMemberRepository>();
         services.AddScoped<IInvitationRepository, InvitationRepository>();
+        services.AddScoped<IRatingRepository, RatingRepository>();
+        services.AddScoped<IPlayerSearchRepository, PlayerSearchRepository>();
+
 
         return services;
     }
@@ -156,6 +159,8 @@ public static class DependencyInjection
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddScoped<IUserGameService, UserGameService>();
+        services.AddScoped<IPlayerSearchService, PlayerSearchService>();
+
 
         return services;
     }

@@ -8,5 +8,9 @@ public sealed class GetLobbyQueryResponse
 
     public required DateTime CreatedAtUtc { get; init; }
 
+    public required bool IsActive { get; init; }
+
+    public required bool IsRatingAvailable { get; init; }
+
     public required IReadOnlyList<LobbyMemberDto> Members { get; init; }
 }

@@ -14,14 +14,12 @@ public sealed class CreateLobbyCommandHandler(
     public async Task<ErrorOr<CreateLobbyCommandResponse>> Handle(CreateLobbyCommand request, CancellationToken cancellationToken)
     {
         bool inActiveLobby = await lobbyRepo.AnyActiveWithMemberAsync(request.ProfileId, cancellationToken);
-
         if (inActiveLobby)
         {
             return Errors.Lobby.AlreadyInLobby;
         }
 
         bool gameExists = await gameRepo.GetByIdAsync(request.GameId, cancellationToken) != null;
-
         if(!gameExists)
         {
             return Errors.Game.NotFound;

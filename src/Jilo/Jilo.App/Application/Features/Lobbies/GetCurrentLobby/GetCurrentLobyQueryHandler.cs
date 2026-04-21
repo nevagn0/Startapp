@@ -13,12 +13,14 @@ public sealed class GetCurrentLobyQueryHandler(
     public async Task<ErrorOr<GetCurrentLobbyQueryResponse>> Handle(GetCurrentLobyQuery request, CancellationToken cancellationToken)
     {
         var lobby = await context.Lobbies
-            .Where(l => l.IsActive && l.Members.Any(m => m.ProfileId == request.ProfileId))
+            .Where(l => l.IsActive && l.Members.Any(m => m.ProfileId == request.ProfileId && m.LeftAtUtc == null))
             .Select(l => new GetCurrentLobbyQueryResponse
             {
                 Id = l.Id,
                 GameId = l.GameId,
                 CreatedAtUtc = l.CreatedAtUtc,
+                IsRatingAvailable = l.IsRatingAvailable,
+                IsActive = l.IsActive,
                 Members = l.Members
                     .Select(m => new LobbyMemberDto
                     {

@@ -20,6 +20,7 @@ public sealed class GetProfileQueryHandler(
                 Username = p.Username,
                 Bio = p.Bio,
                 AvatarUrl = p.AvatarUrl,
+                Rating = p.Rating,
                 Games = p.UserGames
                     .Select(ug => new GameDto()
                     {

@@ -10,6 +10,8 @@ public sealed class LobbyMember
 
     public DateTime JoinedAtUtc { get; private init; }
 
+    public DateTime? LeftAtUtc { get; private set; }
+
     public Lobby Lobby { get; private init; } = null!;
 
     public Profile Profile { get; private init; } = null!;
@@ -19,5 +21,15 @@ public sealed class LobbyMember
         LobbyId = lobbyId;
         ProfileId = profileId;
         JoinedAtUtc = DateTime.UtcNow;
+    }
+
+    public void Left()
+    {
+        if (LeftAtUtc.HasValue)
+        {
+            return;
+        }
+
+        LeftAtUtc = DateTime.UtcNow;
     }
 }

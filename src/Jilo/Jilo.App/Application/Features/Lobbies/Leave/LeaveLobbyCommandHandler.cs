@@ -11,20 +11,12 @@ public sealed class LeaveLobbyCommandHandler(
     public async Task<ErrorOr<Unit>> Handle(LeaveLobbyCommand request, CancellationToken cancellationToken)
     {
         var lobby = await repo.GetAsync(request.LobbyId, cancellationToken);
-        
         if (lobby.IsError)
         {
             return lobby.Errors;
         }
 
-        if (lobby.Value.CreatedByProfileId == request.ProfileId)
-        {
-            repo.Delete(lobby.Value);
-            return Unit.Value;
-        }
-
         var leaveResult = lobby.Value.LeavingBy(request.ProfileId);
-
         if (leaveResult.IsError)
         {
             return leaveResult.Errors;
