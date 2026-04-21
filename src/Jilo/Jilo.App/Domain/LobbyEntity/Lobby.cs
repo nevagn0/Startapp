@@ -70,12 +70,7 @@ public sealed class Lobby
             return Errors.Lobby.NotAMemberOfLobby;
         }
 
-        member.Left();
-
-        if (!Members.Any(m => m.LeftAtUtc == null))
-        {
-            IsActive = false;
-        }
+        Members.Remove(member);
 
         return Result.Success;
     }
