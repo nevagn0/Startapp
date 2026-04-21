@@ -17,6 +17,7 @@ COPY . .
 WORKDIR "/src/Jilo.App"
 RUN dotnet build "./Jilo.App.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
+
 # Этот этап используется для публикации проекта службы, который будет скопирован на последний этап
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
