@@ -225,12 +225,13 @@ input, textarea, select {
 .card {
   position: relative;
   z-index: 1;
-  width: min(1040px, 100%);
+  width: min(450px, 100%);
   background: linear-gradient(145deg, rgba(16, 12, 36, 0.9), rgba(8, 8, 20, 0.95));
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
   box-shadow: var(--glow-subtle);
   backdrop-filter: blur(6px);
+  margin-top: -25px;
 }
 
 .card-inner {
@@ -371,8 +372,8 @@ input, textarea, select {
 }
 
 .auth-wrapper {
-  width: min(520px, 100%);
-  margin-inline: auto;
+  width: min(400px, 90%);
+  margin: 0 auto;
 }
 
 .auth-title {
@@ -516,31 +517,57 @@ input, textarea, select {
 }
 
 .dashboard-nav {
-  margin-top: 0.75rem;
-  display: grid;
-  gap: 0.45rem;
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
 }
 
 .dashboard-nav a,
 .dashboard-nav button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   color: var(--text-secondary);
-  padding: 0.45rem 0.55rem;
-  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
   border: 1px solid transparent;
   width: 100%;
   text-align: left;
+  background: transparent;
+  font-weight: 500;
+  transition: all 0.25s ease;
+  cursor: pointer;
 }
 
+/* Стрелочка справа, появляется при наведении */
+.dashboard-nav a::after,
+.dashboard-nav button::after {
+  content: '→';
+  margin-left: auto;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: all 0.2s ease;
+  font-size: 1.1rem;
+  color: var(--purple-400);
+}
+
+/* Эффект при наведении */
 .dashboard-nav a:hover,
 .dashboard-nav button:hover {
   color: var(--text-primary);
-  border-color: var(--border-glow);
-  background: rgba(124, 58, 237, 0.14);
+  background: linear-gradient(90deg, rgba(124, 58, 237, 0.15), transparent);
+  transform: translateX(6px);
+  border-color: transparent;
 }
 
-.dashboard-nav button {
-  background: transparent;
+.dashboard-nav a:hover::after,
+.dashboard-nav button:hover::after {
+  opacity: 1;
+  transform: translateX(0);
 }
+
+
 
 .feed-block {
   margin-top: 1rem;
