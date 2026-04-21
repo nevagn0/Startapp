@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   acceptInvitation,
@@ -21,7 +21,7 @@ export function InvitationsPopover() {
   const pruneTimerRef = useRef(null)
   const refreshTimerRef = useRef(null)
 
-  const loadInvitations = async () => {
+  const loadInvitations = useCallback(async () => {
     try {
       setIsLoading(true)
       setError('')
@@ -33,9 +33,9 @@ export function InvitationsPopover() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [])
 
-  const stopTimers = () => {
+  const stopTimers = useCallback(() => {
     if (pruneTimerRef.current) {
       window.clearInterval(pruneTimerRef.current)
       pruneTimerRef.current = null
@@ -44,9 +44,9 @@ export function InvitationsPopover() {
       window.clearInterval(refreshTimerRef.current)
       refreshTimerRef.current = null
     }
-  }
+  }, [])
 
-  const startTimers = async () => {
+  const startTimers = useCallback(async () => {
     stopTimers()
 
     pruneTimerRef.current = window.setInterval(() => {
@@ -56,24 +56,32 @@ export function InvitationsPopover() {
     refreshTimerRef.current = window.setInterval(() => {
       loadInvitations().catch(() => {})
     }, 10000)
-  }
+  }, [loadInvitations, stopTimers])
 
   const togglePopover = async () => {
     const nextOpen = !isOpen
     setIsOpen(nextOpen)
     if (nextOpen) {
       await loadInvitations()
-      await startTimers()
-    } else {
-      stopTimers()
     }
   }
+
+  useEffect(() => {
+    const bootstrap = window.setTimeout(() => {
+      loadInvitations().catch(() => {})
+      startTimers().catch(() => {})
+    }, 0)
+
+    return () => {
+      window.clearTimeout(bootstrap)
+      stopTimers()
+    }
+  }, [startTimers, stopTimers, loadInvitations])
 
   const onAccept = async (invitationId) => {
     try {
       await acceptInvitation(invitationId)
       setInvitations((prev) => prev.filter((item) => item.id !== invitationId))
-      stopTimers()
       setIsOpen(false)
       navigate('/lobby')
     } catch (acceptError) {
@@ -94,6 +102,7 @@ export function InvitationsPopover() {
     <div className="invite-popover-wrap">
       <button className="button secondary" type="button" onClick={togglePopover}>
         Приглашения {invitations.length > 0 ? `(${invitations.length})` : ''}
+        {invitations.length > 0 ? <span className="invite-alert-dot" /> : null}
       </button>
 
       {isOpen ? (

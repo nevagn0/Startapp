@@ -33,3 +33,12 @@ export const sendLobbyInvitation = (lobbyId, receiverProfileId) =>
 
 export const getOutgoingLobbyInvitations = (lobbyId) =>
   request(`/api/v1/lobby/${lobbyId}/invitations`)
+
+export const rateLobbyUser = (lobbyId, targetProfileId, value) =>
+  request(`/api/v1/lobby/${lobbyId}/ratings`, {
+    method: 'POST',
+    body: JSON.stringify({
+      targetProfileId,
+      value,
+    }),
+  })

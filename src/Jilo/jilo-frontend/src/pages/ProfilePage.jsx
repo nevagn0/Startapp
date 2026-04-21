@@ -247,6 +247,9 @@ export function ProfilePage() {
           </div>
           <div>
             <p className="profile-nick">{profile?.username || 'Игрок'}</p>
+            <p className="feed-meta">
+              Рейтинг: <strong>{profile?.rating ?? profile?.Rating ?? 0}</strong>
+            </p>
             <label className="button secondary file-button">
               Сменить аватар
               <input type="file" accept=".jpg,.jpeg,.png,.webp" onChange={onAvatarChange} />

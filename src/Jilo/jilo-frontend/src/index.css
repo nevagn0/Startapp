@@ -728,6 +728,14 @@ input, textarea, select {
   position: relative;
 }
 
+.invite-alert-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #ff3355;
+  box-shadow: 0 0 8px rgba(255, 51, 85, 0.7);
+}
+
 .invite-popover {
   position: absolute;
   right: 0;
@@ -811,6 +819,41 @@ input, textarea, select {
   justify-content: center;
   align-items: center;
   text-align: center;
+  position: relative;
+}
+
+.lobby-rate {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 6px;
+}
+
+.rate-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(8, 8, 25, 0.85);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.rate-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.rate-btn.like:hover:not(:disabled) {
+  border-color: rgba(34, 211, 238, 0.45);
+}
+
+.rate-btn.dislike:hover:not(:disabled) {
+  border-color: rgba(244, 114, 182, 0.55);
 }
 
 .lobby-slot.owner {

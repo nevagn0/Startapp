@@ -8,12 +8,17 @@ import {
   getOutgoingLobbyInvitations,
   kickFromLobby,
   leaveLobby,
+  rateLobbyUser,
   sendLobbyInvitation,
 } from '../api/lobby'
 import { searchPlayers } from '../api/playerSearch'
 
 const TEAM_SIZE = 5
 const OWNER_SLOT_INDEX = 2
+const RATING_VALUE = {
+  LIKE: 0,
+  DISLIKE: 1,
+}
 const presets = {
   default: {
     roles: ['Игрок', 'Саппорт', 'Штурмовик', 'Снайпер'],
@@ -46,7 +51,16 @@ export function LobbyPage() {
   const [playerResults, setPlayerResults] = useState([])
   const [isBusy, setIsBusy] = useState(false)
   const [error, setError] = useState('')
+  const [toast, setToast] = useState(null)
+  const toastTimerRef = useRef(null)
   const outgoingPollRef = useRef(null)
+  const [ratedTargets, setRatedTargets] = useState({})
+
+  const isAlreadyRated = useCallback(
+    (targetProfileId) =>
+      Object.prototype.hasOwnProperty.call(ratedTargets, targetProfileId),
+    [ratedTargets],
+  )
 
   const stopOutgoingPolling = useCallback(() => {
     if (outgoingPollRef.current) {
@@ -136,6 +150,9 @@ export function LobbyPage() {
   useEffect(() => {
     return () => {
       stopOutgoingPolling()
+      if (toastTimerRef.current) {
+        window.clearTimeout(toastTimerRef.current)
+      }
     }
   }, [stopOutgoingPolling])
 
@@ -223,6 +240,28 @@ export function LobbyPage() {
     }
   }
 
+  const rateUser = async (targetProfileId, value) => {
+    if (!lobby?.id) return
+    if (!targetProfileId) return
+    if (isAlreadyRated(targetProfileId)) return
+    if (profile?.id && targetProfileId === profile.id) return
+
+    try {
+      setIsBusy(true)
+      await rateLobbyUser(lobby.id, targetProfileId, value)
+      setRatedTargets((prev) => ({ ...prev, [targetProfileId]: value }))
+      if (toastTimerRef.current) {
+        window.clearTimeout(toastTimerRef.current)
+      }
+      setToast({ type: 'success', message: 'Пользователь оценён' })
+      toastTimerRef.current = window.setTimeout(() => setToast(null), 2200)
+    } catch (rateError) {
+      setError(rateError.message || 'Не удалось поставить оценку.')
+    } finally {
+      setIsBusy(false)
+    }
+  }
+
   const kickPlayer = async (profileId) => {
     if (!lobby?.id) return
 
@@ -256,6 +295,26 @@ export function LobbyPage() {
     if (index === OWNER_SLOT_INDEX) {
       return (
         <div className="lobby-slot owner" key={`slot-owner-${owner?.id || 'none'}`}>
+          <div className="lobby-rate">
+            <button
+              type="button"
+              className="rate-btn like"
+              disabled={!owner?.id || owner?.id === profile?.id || isAlreadyRated(owner?.id) || isBusy}
+              onClick={() => rateUser(owner?.id, RATING_VALUE.LIKE)}
+              title="Лайк"
+            >
+              👍
+            </button>
+            <button
+              type="button"
+              className="rate-btn dislike"
+              disabled={!owner?.id || owner?.id === profile?.id || isAlreadyRated(owner?.id) || isBusy}
+              onClick={() => rateUser(owner?.id, RATING_VALUE.DISLIKE)}
+              title="Дизлайк"
+            >
+              👎
+            </button>
+          </div>
           <p className="feed-meta">Лидер</p>
           <h3>{owner?.username || 'Пустой слот'}</h3>
           <p className="feed-meta">
@@ -282,6 +341,26 @@ export function LobbyPage() {
 
     return (
       <div className="lobby-slot member" key={slotMember.id}>
+        <div className="lobby-rate">
+          <button
+            type="button"
+            className="rate-btn like"
+            disabled={slotMember.id === profile?.id || isAlreadyRated(slotMember.id) || isBusy}
+            onClick={() => rateUser(slotMember.id, RATING_VALUE.LIKE)}
+            title="Лайк"
+          >
+            👍
+          </button>
+          <button
+            type="button"
+            className="rate-btn dislike"
+            disabled={slotMember.id === profile?.id || isAlreadyRated(slotMember.id) || isBusy}
+            onClick={() => rateUser(slotMember.id, RATING_VALUE.DISLIKE)}
+            title="Дизлайк"
+          >
+            👎
+          </button>
+        </div>
         <h4>{slotMember.username}</h4>
         <p className="feed-meta">
           {slotMember.role} · {slotMember.rank}
@@ -301,6 +380,11 @@ export function LobbyPage() {
 
   return (
     <AuthenticatedLayout avatarUrl={profile?.avatarUrl} username={profile?.username}>
+      {toast ? (
+        <div className={`profile-toast ${toast.type === 'error' ? 'error' : 'success'}`}>
+          {toast.message}
+        </div>
+      ) : null}
       <section className="lobby-page">
         <div className="lobby-head">
           <h1>Лобби</h1>
