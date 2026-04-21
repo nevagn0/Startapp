@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
+import { InvitationsPopover } from './InvitationsPopover'
 
 export function AuthenticatedLayout({ avatarUrl, username, children }) {
   const { isAuthenticated } = useAuth()
@@ -17,15 +18,18 @@ export function AuthenticatedLayout({ avatarUrl, username, children }) {
 
         <div className="topbar-right">
           {isAuthenticated ? (
-            <Link className="avatar-link" to="/profile" title="Личный кабинет">
-              {avatarUrl ? (
-                <img className="avatar-img" src={avatarUrl} alt={username || 'avatar'} />
-              ) : (
-                <span className="avatar-fallback">
-                  {(username || 'U').slice(0, 1).toUpperCase()}
-                </span>
-              )}
-            </Link>
+            <>
+              <InvitationsPopover />
+              <Link className="avatar-link" to="/profile" title="Личный кабинет">
+                {avatarUrl ? (
+                  <img className="avatar-img" src={avatarUrl} alt={username || 'avatar'} />
+                ) : (
+                  <span className="avatar-fallback">
+                    {(username || 'U').slice(0, 1).toUpperCase()}
+                  </span>
+                )}
+              </Link>
+            </>
           ) : (
             <Link className="button secondary" to="/login">
               Вход

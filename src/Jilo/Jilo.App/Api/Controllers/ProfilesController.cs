@@ -193,7 +193,7 @@ public sealed class ProfilesController(IMediator mediator, IUserGameService user
         var userGames = await userGameService.GetUserGamesAsync(profileId, cancellationToken);
 
         return userGames.MatchFirst<ActionResult>(
-            onValue: value => Ok(),
+            onValue: value => Ok(value),
             onFirstError: error => error.Type switch
             {
                 _ => Problem(

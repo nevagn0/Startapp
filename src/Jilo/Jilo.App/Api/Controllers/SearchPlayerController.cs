@@ -33,7 +33,7 @@ public class PlayerSearchController : ControllerBase
         var searchResult = await _playerSearchService.SearchPlayersAsync(request, cancellationToken);
 
         return searchResult.MatchFirst<ActionResult>(
-            onValue: value => Ok(),
+            onValue: value => Ok(value),
             onFirstError: error => error.Type switch
             {
                 ErrorType.NotFound => Problem(

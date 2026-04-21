@@ -55,7 +55,10 @@ export function HomePage() {
           <nav className="dashboard-nav">
             <Link to="/">Главная</Link>
             {isAuthenticated ? (
-              <Link to="/profile">Личный кабинет</Link>
+              <>
+                <Link to="/profile">Личный кабинет</Link>
+                <Link to="/lobby">Лобби</Link>
+              </>
             ) : (
               <Link to="/login">Войти в аккаунт</Link>
             )}

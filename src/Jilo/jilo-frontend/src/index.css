@@ -471,6 +471,7 @@ input, textarea, select {
   display: flex;
   align-items: center;
   gap: 0.7rem;
+  position: relative;
 }
 
 .avatar-link {
@@ -498,7 +499,6 @@ input, textarea, select {
 
 .dashboard-grid {
   position: relative;
-  z-index: 1;
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
@@ -521,7 +521,7 @@ input, textarea, select {
   gap: 0.45rem;
 }
 
-.dashboard-nav a {
+.dashboard-nav a,
 .dashboard-nav button {
   color: var(--text-secondary);
   padding: 0.45rem 0.55rem;
@@ -529,14 +529,14 @@ input, textarea, select {
   border: 1px solid transparent;
   width: 100%;
   text-align: left;
-}}
+}
 
-.dashboard-nav a:hover {
+.dashboard-nav a:hover,
 .dashboard-nav button:hover {
   color: var(--text-primary);
   border-color: var(--border-glow);
   background: rgba(124, 58, 237, 0.14);
-}}
+}
 
 .dashboard-nav button {
   background: transparent;
@@ -570,13 +570,8 @@ input, textarea, select {
 
 .profile-card {
   position: relative;
-  z-index: 1;
   max-width: 920px;
   margin: 0 auto;
-}
-
-body:has(.profile-card) {
-  overflow-y: hidden;
 }
 
 .profile-head {
@@ -702,12 +697,143 @@ body:has(.profile-card) {
   color: var(--pink-300);
 }
 
+.invite-popover-wrap {
+  position: relative;
+}
+
+.invite-popover {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: min(460px, 88vw);
+  max-height: 60vh;
+  overflow-y: auto;
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(8, 8, 25, 0.96);
+  padding: 0.8rem;
+  z-index: 100;
+  box-shadow: var(--glow-subtle);
+}
+
+.invite-popover-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.65rem;
+}
+
+.invite-popover-header button {
+  border: 1px solid var(--border-glow);
+  border-radius: 8px;
+  padding: 0.35rem 0.6rem;
+  color: var(--text-primary);
+}
+
+.invite-list {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.lobby-page {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: rgba(9, 9, 26, 0.85);
+  padding: 1rem;
+}
+
+.lobby-head {
+  margin-bottom: 0.8rem;
+}
+
+.lobby-create-card {
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 0.9rem;
+  background: rgba(20, 15, 40, 0.45);
+}
+
+.lobby-create-controls {
+  margin-top: 0.6rem;
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.lobby-arena {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(120px, 1fr));
+  gap: 0.8rem;
+  margin-top: 0.8rem;
+  margin-bottom: 0.8rem;
+  overflow-x: auto;
+}
+
+.lobby-slot {
+  min-height: 170px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  background: rgba(20, 15, 40, 0.5);
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.lobby-slot.owner {
+  border-color: rgba(236, 72, 153, 0.45);
+  box-shadow: var(--glow-pink);
+}
+
+.lobby-slot.empty {
+  font-size: 2rem;
+  color: var(--pink-300);
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background: rgba(4, 4, 10, 0.62);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.modal-card {
+  width: min(780px, 96vw);
+  max-height: 82vh;
+  overflow-y: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: rgba(8, 8, 25, 0.98);
+  padding: 1rem;
+}
+
+.invite-filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(120px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+}
+
 @media (max-width: 920px) {
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
 
   .game-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .invite-filters {
     grid-template-columns: 1fr;
   }
 }

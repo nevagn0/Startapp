@@ -78,7 +78,10 @@ export function ProfilePage() {
     setProfile(profileData)
     setBio(profileData?.bio || '')
     setAllGames(gamesData || [])
-    setMyGames(myGamesData || [])
+    const normalizedMyGames = Array.isArray(myGamesData)
+      ? myGamesData
+      : myGamesData?.games || myGamesData?.items || []
+    setMyGames(normalizedMyGames)
   }
 
   const showToast = (message, type = 'success') => {
