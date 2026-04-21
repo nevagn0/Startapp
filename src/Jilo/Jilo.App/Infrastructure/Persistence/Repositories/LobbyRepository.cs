@@ -17,7 +17,7 @@ public sealed class LobbyRepository(ServiceContext context) : ILobbyRepository
     {
         return context.Lobbies
             .AnyAsync(l => l.Members
-                .Any(m => m.ProfileId == profileId && m.LeftAtUtc == null), cancellationToken);
+                .Any(m => m.ProfileId == profileId), cancellationToken);
     }
 
     public void Delete(Lobby lobby)
