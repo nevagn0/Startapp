@@ -16,6 +16,11 @@ public sealed class LeaveLobbyCommandHandler(
             return lobby.Errors;
         }
 
+        if (lobby.Value.CreatedByProfileId == request.ProfileId)
+        {
+            repo.Delete(lobby.Value);
+        }
+
         var leaveResult = lobby.Value.LeavingBy(request.ProfileId);
         if (leaveResult.IsError)
         {

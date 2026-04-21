@@ -10,7 +10,7 @@ public sealed class DeleteCommandHandler(
 {
     public async Task<ErrorOr<Unit>> Handle(DeleteCommand request, CancellationToken cancellationToken)
     {
-        var lobby = await repo.GetAsync(request.LobbyId);
+        var lobby = await repo.GetAsync(request.LobbyId, cancellationToken);
 
         if (lobby.IsError)
         {
