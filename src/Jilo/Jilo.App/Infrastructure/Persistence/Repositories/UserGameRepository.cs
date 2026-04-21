@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Jilo.App.Application.Common.Repositories;
-using Jilo.App.Domain.Entities;
 using Jilo.App.Infrastructure.Persistence;
+using Jilo.App.Domain.GameEntity;
 
-namespace Jilo.App.Infrastructure.Repositories;
+namespace Jilo.App.Infrastructure.Persistence.Repositories;
 
 public class UserGameRepository : IUserGameRepository
 {

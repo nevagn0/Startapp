@@ -1,14 +1,14 @@
 ﻿using ErrorOr;
 using Jilo.App.Api.Authorization;
 using Jilo.App.Api.Dto.Lobbies;
-using Jilo.App.Applicatoin.Features.Invitations.GetOutgoing;
-using Jilo.App.Applicatoin.Features.Invitations.Send;
-using Jilo.App.Applicatoin.Features.Lobbies.Create;
-using Jilo.App.Applicatoin.Features.Lobbies.Delete;
-using Jilo.App.Applicatoin.Features.Lobbies.Get;
-using Jilo.App.Applicatoin.Features.Lobbies.GetCurrentLobby;
-using Jilo.App.Applicatoin.Features.Lobbies.Kick;
-using Jilo.App.Applicatoin.Features.Lobbies.Leave;
+using Jilo.App.Application.Features.Invitations.GetOutgoing;
+using Jilo.App.Application.Features.Invitations.Send;
+using Jilo.App.Application.Features.Lobbies.Create;
+using Jilo.App.Application.Features.Lobbies.Delete;
+using Jilo.App.Application.Features.Lobbies.Get;
+using Jilo.App.Application.Features.Lobbies.GetCurrentLobby;
+using Jilo.App.Application.Features.Lobbies.Kick;
+using Jilo.App.Application.Features.Lobbies.Leave;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -94,7 +94,7 @@ public sealed class LobbiesController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult> GetAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<ActionResult<GetLobbyQueryResponse>> GetAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var query = new GetLobbyQuery(id);
 
@@ -254,7 +254,7 @@ public sealed class LobbiesController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult> GetOutgoingInvitationsAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<ActionResult<GetOutgoingInvitationsQueryResponse>> GetOutgoingInvitationsAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var query = new GetOutgoingInvitationsQuery(id);
 

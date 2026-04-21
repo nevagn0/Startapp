@@ -1,5 +1,4 @@
-﻿using Jilo.App.Domain.Entities;
-using Jilo.App.Domain.GameEntity;
+﻿using Jilo.App.Domain.GameEntity;
 using Jilo.App.Domain.InvitationEntity;
 using Jilo.App.Domain.LobbyEntity;
 using Jilo.App.Domain.UserEntity;

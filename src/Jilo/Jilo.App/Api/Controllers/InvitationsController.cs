@@ -1,8 +1,8 @@
 ﻿using ErrorOr;
-using Jilo.App.Applicatoin.Features.Invitations.Accept;
-using Jilo.App.Applicatoin.Features.Invitations.Cancel;
-using Jilo.App.Applicatoin.Features.Invitations.Decline;
-using Jilo.App.Applicatoin.Features.Invitations.GetIncoming;
+using Jilo.App.Application.Features.Invitations.Accept;
+using Jilo.App.Application.Features.Invitations.Cancel;
+using Jilo.App.Application.Features.Invitations.Decline;
+using Jilo.App.Application.Features.Invitations.GetIncoming;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

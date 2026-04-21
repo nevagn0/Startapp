@@ -1,7 +1,7 @@
 ﻿using ErrorOr;
-using Microsoft.AspNetCore.Mvc;
 using Jilo.App.Application.Common.Services;
-using Jilo.App.Applicatoin.DTO;
+using Jilo.App.Application.DTO;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Jilo.App.API.Controllers;
 
@@ -25,34 +25,29 @@ public class PlayerSearchController : ControllerBase
         [FromQuery] Guid gameId,
         [FromQuery] string? rank = null,
         [FromQuery] string? role = null,
-        [FromQuery] int? minHours = null,
         [FromQuery] string? query = null,
         CancellationToken cancellationToken = default)
     {
         var request = new SearchPlayersRequest(gameId, rank, role, query);
 
-        var result = await _playerSearchService.SearchPlayersAsync(request, cancellationToken);
+        var searchResult = await _playerSearchService.SearchPlayersAsync(request, cancellationToken);
 
-        return result.Match(
-            value => Ok(value),
-            errors => Problem(errors)
-        );
-    }
-
-    private IActionResult Problem(List<Error> errors)
-    {
-        var firstError = errors[0];
-        var statusCode = firstError.Type switch
-        {
-            ErrorType.NotFound => StatusCodes.Status404NotFound,
-            ErrorType.Validation => StatusCodes.Status400BadRequest,
-            _ => StatusCodes.Status500InternalServerError
-        };
-
-        return Problem(
-            title: firstError.Code,
-            detail: firstError.Description,
-            statusCode: statusCode
-        );
+        return searchResult.MatchFirst<ActionResult>(
+            onValue: value => Ok(),
+            onFirstError: error => error.Type switch
+            {
+                ErrorType.NotFound => Problem(
+                    statusCode: StatusCodes.Status404NotFound,
+                    title: error.Code,
+                    detail: $"Unexpected error. Details: {error.Description}"),
+                ErrorType.Validation => Problem(
+                    statusCode: StatusCodes.Status400BadRequest,
+                    title: error.Code,
+                    detail: $"Unexpected error. Details: {error.Description}"),
+                _ => Problem(
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: error.Code,
+                    detail: $"Unexpected error. Details: {error.Description}")
+            });
     }
 }

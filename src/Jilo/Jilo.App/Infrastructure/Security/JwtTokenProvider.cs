@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
-using Jilo.App.Applicatoin.Common.Repositories;
-using Jilo.App.Applicatoin.Common.Services;
+using Jilo.App.Application.Common.Repositories;
+using Jilo.App.Application.Common.Services;
 using Jilo.App.Domain.Models;
 using Jilo.App.Domain.UserEntity;
 using Microsoft.Extensions.Options;

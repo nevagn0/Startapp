@@ -2,15 +2,12 @@
 using Jilo.App.Api.Authorization;
 using Jilo.App.Api.Authorization.Handlers;
 using Jilo.App.Api.Authorization.Requirements;
+using Jilo.App.Application.Behaviors;
 using Jilo.App.Application.Common.Repositories;
 using Jilo.App.Application.Common.Services;
-using Jilo.App.Application.Services;
-using Jilo.App.Applicatoin.Behaviors;
-using Jilo.App.Applicatoin.Common.Repositories;
-using Jilo.App.Applicatoin.Common.Services;
+using Jilo.App.Application.Implementations;
 using Jilo.App.Infrastructure.Persistence;
 using Jilo.App.Infrastructure.Persistence.Repositories;
-using Jilo.App.Infrastructure.Repositories;
 using Jilo.App.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;

@@ -1,5 +1,5 @@
 ﻿using Isopoh.Cryptography.Argon2;
-using Jilo.App.Applicatoin.Common.Services;
+using Jilo.App.Application.Common.Services;
 
 namespace Jilo.App.Infrastructure.Security;
 

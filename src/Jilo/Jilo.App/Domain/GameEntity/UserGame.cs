@@ -1,7 +1,6 @@
-﻿using Jilo.App.Domain.GameEntity;
-using Jilo.App.Domain.UserEntity;
+﻿using Jilo.App.Domain.UserEntity;
 
-namespace Jilo.App.Domain.Entities;
+namespace Jilo.App.Domain.GameEntity;
 
 public sealed class UserGame
 {

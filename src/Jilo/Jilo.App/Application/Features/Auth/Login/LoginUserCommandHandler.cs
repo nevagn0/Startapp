@@ -1,0 +1,48 @@
+﻿using ErrorOr;
+using Jilo.App.Application.Common.Repositories;
+using Jilo.App.Application.Common.Services;
+using Jilo.App.Domain;
+using Jilo.App.Domain.Models;
+using Jilo.App.Domain.UserEntity;
+using MediatR;
+
+namespace Jilo.App.Application.Features.Auth.Login;
+
+public sealed class LoginUserCommandHandler(
+    IUserRepository userRepo,
+    IRefreshTokenRepository refreshTokenRepo,
+    IPasswordHasher passwordHasher,
+    ITokenHasher tokenHasher,
+    ITokenProvider tokenProvider)
+    : IRequestHandler<LoginUserCommand, ErrorOr<TokenPair>>
+{
+    public async Task<ErrorOr<TokenPair>> Handle(LoginUserCommand request, CancellationToken cancellationToken)
+    {
+        var user = await userRepo.FindAsync(request.Username, cancellationToken);
+
+        if (user.IsError)
+        {
+            return Errors.Auth.Unauthorized;
+        }
+
+        if (!passwordHasher.VerifyPassword(request.Password, user.Value.PasswordHash))
+        {
+            return Errors.Auth.Unauthorized;
+        }
+
+        var tokenPair = await tokenProvider.GetTokensForUser(user.Value);
+
+        if (tokenPair.IsError)
+        {
+            return tokenPair.Errors;
+        }
+
+        var tokenHash = tokenHasher.HashToken(tokenPair.Value.RefreshToken);
+
+        var refreshToken = new RefreshToken(user.Value.Id, tokenHash, DateTime.UtcNow.AddDays(30));
+
+        refreshTokenRepo.Add(refreshToken);
+
+        return tokenPair.Value;
+    }
+}

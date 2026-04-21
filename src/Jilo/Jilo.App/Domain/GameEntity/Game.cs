@@ -1,4 +1,3 @@
-using Jilo.App.Domain.Entities;
 using Jilo.App.Domain.LobbyEntity;
 
 namespace Jilo.App.Domain.GameEntity
