@@ -3,6 +3,7 @@ using System;
 using Jilo.App.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Jilo.App.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ServiceContext))]
-    partial class ServiceContextModelSnapshot : ModelSnapshot
+    [Migration("20260420193810_LobbyAndLobbyMemberEntities")]
+    partial class LobbyAndLobbyMemberEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,55 +85,6 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("Games", (string)null);
-                });
-
-            modelBuilder.Entity("Jilo.App.Domain.InvitationEntity.Invitation", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("AcceptedAtUtc")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("CanceledAtUtc")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("CreatedAtUtc")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeclinedAtUtc")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("ExpiresAtUtc")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("LobbyId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("ReceiverProfileId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("SenderProfileId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ExpiresAtUtc");
-
-                    b.HasIndex("LobbyId");
-
-                    b.HasIndex("SenderProfileId");
-
-                    b.HasIndex("Status");
-
-                    b.HasIndex("ReceiverProfileId", "Status");
-
-                    b.ToTable("Invitations");
                 });
 
             modelBuilder.Entity("Jilo.App.Domain.LobbyEntity.Lobby", b =>
@@ -304,33 +258,6 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
                     b.Navigation("GameCatalog");
 
                     b.Navigation("Profile");
-                });
-
-            modelBuilder.Entity("Jilo.App.Domain.InvitationEntity.Invitation", b =>
-                {
-                    b.HasOne("Jilo.App.Domain.LobbyEntity.Lobby", "Lobby")
-                        .WithMany()
-                        .HasForeignKey("LobbyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Jilo.App.Domain.UserEntity.Profile", "ReceiverProfile")
-                        .WithMany()
-                        .HasForeignKey("ReceiverProfileId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Jilo.App.Domain.UserEntity.Profile", "SenderProfile")
-                        .WithMany()
-                        .HasForeignKey("SenderProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Lobby");
-
-                    b.Navigation("ReceiverProfile");
-
-                    b.Navigation("SenderProfile");
                 });
 
             modelBuilder.Entity("Jilo.App.Domain.LobbyEntity.Lobby", b =>

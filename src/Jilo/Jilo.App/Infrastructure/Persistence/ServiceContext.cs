@@ -1,5 +1,7 @@
 ﻿using Jilo.App.Domain.Entities;
 using Jilo.App.Domain.GameEntity;
+using Jilo.App.Domain.InvitationEntity;
+using Jilo.App.Domain.LobbyEntity;
 using Jilo.App.Domain.UserEntity;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +18,12 @@ public sealed class ServiceContext : DbContext
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     public DbSet<Profile> Profiles => Set<Profile>();
+
+    public DbSet<Lobby> Lobbies => Set<Lobby>();
+
+    public DbSet<LobbyMember> LobbyMembers => Set<LobbyMember>();
+
+    public DbSet<Invitation> Invitations => Set<Invitation>();
 
     public ServiceContext(DbContextOptions<ServiceContext> options)
         : base(options)

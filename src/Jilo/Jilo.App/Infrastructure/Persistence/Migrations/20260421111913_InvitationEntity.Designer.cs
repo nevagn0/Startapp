@@ -3,6 +3,7 @@ using System;
 using Jilo.App.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Jilo.App.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ServiceContext))]
-    partial class ServiceContextModelSnapshot : ModelSnapshot
+    [Migration("20260421111913_InvitationEntity")]
+    partial class InvitationEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -108,7 +111,7 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("LobbyId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("ReceiverProfileId")
+                    b.Property<Guid>("RecieverProfileId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("SenderProfileId")
@@ -128,7 +131,7 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("Status");
 
-                    b.HasIndex("ReceiverProfileId", "Status");
+                    b.HasIndex("RecieverProfileId", "Status");
 
                     b.ToTable("Invitations");
                 });
@@ -314,9 +317,9 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Jilo.App.Domain.UserEntity.Profile", "ReceiverProfile")
+                    b.HasOne("Jilo.App.Domain.UserEntity.Profile", "RecieverProfile")
                         .WithMany()
-                        .HasForeignKey("ReceiverProfileId")
+                        .HasForeignKey("RecieverProfileId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -328,7 +331,7 @@ namespace Jilo.App.Infrastructure.Persistence.Migrations
 
                     b.Navigation("Lobby");
 
-                    b.Navigation("ReceiverProfile");
+                    b.Navigation("RecieverProfile");
 
                     b.Navigation("SenderProfile");
                 });
