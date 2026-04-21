@@ -1,6 +1,7 @@
 ﻿using ErrorOr;
 using Jilo.App.Api.Authorization;
 using Jilo.App.Api.Dto.Lobbies;
+using Jilo.App.Api.Dto.Ratings;
 using Jilo.App.Application.Features.Invitations.GetOutgoing;
 using Jilo.App.Application.Features.Invitations.Send;
 using Jilo.App.Application.Features.Lobbies.Create;
@@ -9,6 +10,7 @@ using Jilo.App.Application.Features.Lobbies.Get;
 using Jilo.App.Application.Features.Lobbies.GetCurrentLobby;
 using Jilo.App.Application.Features.Lobbies.Kick;
 using Jilo.App.Application.Features.Lobbies.Leave;
+using Jilo.App.Application.Features.Ratings.RateUser;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -266,5 +268,44 @@ public sealed class LobbiesController(IMediator mediator) : ControllerBase
                 statusCode: StatusCodes.Status500InternalServerError,
                 title: error.Code,
                 detail: $"Unexpected error. Details: {error.Description}"));
+    }
+
+    [HttpPost("{id:guid}/ratings")]
+    public async Task<ActionResult> RateUserAsync([FromRoute] Guid id, [FromBody] RatingRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var profileIdStr = HttpContext.User.FindFirst(JwtRegisteredClaimNames.Profile)?.Value;
+        if (profileIdStr is null || !Guid.TryParse(profileIdStr, out var profileId))
+        {
+            return Problem(statusCode: StatusCodes.Status401Unauthorized);
+        }
+
+        int value = request.Value == RatingValue.Like ? 1 : -1;
+
+        var command = new RateUserCommand(id, profileId, request.TargetProfileId, value);
+
+        var rateUserResult = await mediator.Send(command, cancellationToken);
+
+        return rateUserResult.MatchFirst<ActionResult>(
+            onValue: value => Ok(),
+            onFirstError: error => error.Type switch
+            {
+                ErrorType.Failure => Problem(
+                    statusCode: StatusCodes.Status400BadRequest,
+                    title: error.Code,
+                    detail: error.Description),
+                ErrorType.Conflict => Problem(
+                    statusCode: StatusCodes.Status409Conflict,
+                    title: error.Code,
+                    detail: error.Description),
+                ErrorType.NotFound => Problem(
+                    statusCode: StatusCodes.Status404NotFound,
+                    title: error.Code,
+                    detail: error.Description),
+                _ => Problem(
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: error.Code,
+                    detail: error.Description)
+            });
     }
 }

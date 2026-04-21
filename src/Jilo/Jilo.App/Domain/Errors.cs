@@ -4,6 +4,21 @@ namespace Jilo.App.Domain;
 
 public static class Errors
 {
+    public static class Ratings
+    {
+        public static Error CannotRateSelf => Error.Failure(
+            code: "Ratings.CannotRateSelf",
+            description: "Cannot rate seld");
+
+        public static Error TooEarly => Error.Failure(
+            code: "Ratings.TooEarly",
+            description: "Not enough time passed. Rating is not allowed");
+
+        public static Error AlreadyRated => Error.Conflict(
+            code: "Ratings.AlreadyRated",
+            description: "You have already rated this user");
+    }
+
     public static class Invitation
     {
         public static Error AlreadyProcessed => Error.Failure(

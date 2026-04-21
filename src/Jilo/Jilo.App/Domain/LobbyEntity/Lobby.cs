@@ -1,5 +1,6 @@
 ﻿using ErrorOr;
 using Jilo.App.Domain.GameEntity;
+using Jilo.App.Domain.RatingEntity;
 using Jilo.App.Domain.UserEntity;
 
 namespace Jilo.App.Domain.LobbyEntity;
@@ -24,6 +25,14 @@ public sealed class Lobby
 
     public bool IsActive { get; private set; }
 
+    public ICollection<Rating> Ratings { get; private set; }
+
+    public bool IsRatingAvailable => DateTime.UtcNow >= RatingAvailableSinceUtc && DateTime.UtcNow <= RatingAvailableUntilUtc;
+
+    public DateTime? RatingAvailableSinceUtc { get; private set; }
+
+    public DateTime? RatingAvailableUntilUtc { get; private set; }
+
     public Lobby(Guid gameId, Guid createdByProfileId)
     {
         Id = Guid.NewGuid();
@@ -31,6 +40,7 @@ public sealed class Lobby
         CreatedByProfileId = createdByProfileId;
         CreatedAtUtc = DateTime.UtcNow;
         Members = [];
+        Ratings = [];
         IsActive = true;
     }
 
@@ -43,19 +53,29 @@ public sealed class Lobby
 
         Members.Add(new LobbyMember(Id, profileId));
 
+        if (Members.Count >= 2)
+        {
+            RatingAvailableSinceUtc = DateTime.UtcNow;
+            RatingAvailableUntilUtc = DateTime.UtcNow.AddHours(24);
+        }
+
         return Result.Success;
     }
 
     public ErrorOr<Success> LeavingBy(Guid profileId)
     {
         var member = Members.FirstOrDefault(lb => lb.ProfileId == profileId);
-
         if (member is null)
         {
             return Errors.Lobby.NotAMemberOfLobby;
         }
 
-        Members.Remove(member);
+        member.Left();
+
+        if (!Members.Any(m => m.LeftAtUtc == null))
+        {
+            IsActive = false;
+        }
 
         return Result.Success;
     }
