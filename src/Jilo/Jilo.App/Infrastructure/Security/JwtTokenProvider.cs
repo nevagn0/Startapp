@@ -50,6 +50,7 @@ public sealed class JwtTokenProvider(IOptions<JwtOptions> options, IProfileRepos
             new(JwtRegisteredClaimNames.Email, user.Email.ToString()),
             new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new(JwtRegisteredClaimNames.Profile, profile.Value.Id.ToString()),  
+            new("premium", profile.Value.HasPremium.ToString()),
             new(ClaimTypes.Role, user.Role.ToString())
         };
 

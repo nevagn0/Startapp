@@ -1,4 +1,5 @@
-﻿using Jilo.App.Domain.GameEntity;
+﻿using ErrorOr;
+using Jilo.App.Domain.GameEntity;
 using Jilo.App.Domain.LobbyEntity;
 
 namespace Jilo.App.Domain.UserEntity;
@@ -19,6 +20,8 @@ public sealed class Profile
 
     public User User { get; private init; } = null!;
 
+    public bool HasPremium { get; private set; }
+
     public ICollection<UserGame> UserGames { get; private set; }
 
     public ICollection<Lobby> CreatedLobbies { get; private set; }
@@ -36,6 +39,7 @@ public sealed class Profile
         UserGames = [];
         CreatedLobbies = [];
         LobbyMemberships = [];
+        HasPremium = false;
     }
 
     public void UpdateRating(int delta)
@@ -51,5 +55,16 @@ public sealed class Profile
     public void UpdateAvatarUrl(string avatarUrl)
     {
         AvatarUrl = avatarUrl;
+    }
+
+    public ErrorOr<Success> Subscribe()
+    {
+        if (HasPremium)
+        {
+            return Errors.User.AlreadyPremiumUser;
+        }
+
+        HasPremium = true;
+        return Result.Success;
     }
 }

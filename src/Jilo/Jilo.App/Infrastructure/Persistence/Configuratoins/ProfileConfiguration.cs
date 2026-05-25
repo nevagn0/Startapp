@@ -12,6 +12,8 @@ public sealed class ProfileConfiguration : IEntityTypeConfiguration<Profile>
 
         builder.HasIndex(x => x.Username).IsUnique();
 
+        builder.HasIndex(x => x.HasPremium);
+
         builder
             .HasOne(x => x.User)
             .WithOne(x => x.Profile)
