@@ -8,7 +8,7 @@ public record SearchPlayersRequest(
 );
 
 public record PlayerSearchResponse(
-    Guid UserId,
+    Guid ProfileId,
     string Username,
     string Bio,
     string? AvatarUrl,

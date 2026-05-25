@@ -43,7 +43,7 @@ public class PlayerSearchRepository : IPlayerSearchRepository
 
         var results = await query
             .Select(ug => new PlayerSearchResponse(
-                ug.Profile.UserId,
+                ug.Profile.Id,
                 ug.Profile.Username,
                 ug.Profile.Bio ?? string.Empty,
                 ug.Profile.AvatarUrl,

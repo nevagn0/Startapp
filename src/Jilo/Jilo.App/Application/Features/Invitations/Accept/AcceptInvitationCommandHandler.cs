@@ -35,6 +35,12 @@ public sealed class AcceptInvitationCommandHandler(
             return Errors.Invitation.Expired;
         }
 
+        bool alreadyInAnyLobby = await lobbyRepo.AnyActiveWithMemberAsync(request.ProfileId, cancellationToken);
+        if (alreadyInAnyLobby)
+        {
+            return Errors.Lobby.LeaveBeforeAccept;
+        }
+
         var lobby = await lobbyRepo.GetAsync(invitation.Value.LobbyId, cancellationToken);
         if (lobby.IsError)
         {

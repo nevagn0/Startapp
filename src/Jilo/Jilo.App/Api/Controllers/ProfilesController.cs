@@ -117,7 +117,7 @@ public sealed class ProfilesController(IMediator mediator, IUserGameService user
             });
     }
 
-    [Authorize]
+[Authorize]
     [HttpPost("me/avatar")]
     [Consumes("multipart/form-data")]
     [ProducesResponseType(StatusCodes.Status200OK)]

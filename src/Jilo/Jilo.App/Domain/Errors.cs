@@ -96,6 +96,10 @@ public static class Errors
 
     public static class Lobby
     {
+        public static Error LeaveBeforeAccept => Error.Conflict(
+            code: "Lobby.LeaveBeforeAccept",
+            description: "Leave current lobby before accept invitation to another lobby");
+
         public static Error PendingInvitation => Error.Conflict(
             code: "Lobby.PendingInvitation",
             description: "User already invited to this lobby");
