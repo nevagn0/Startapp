@@ -2,5 +2,5 @@
 
 namespace Jilo.App.Application.Features.Auth.Register;
 
-public sealed record RegisterUserCommand(string Email, string Username, string Password)
+public sealed record RegisterUserCommand(string Username, string Password)
     : ICommand<RegisterUserResponse>;

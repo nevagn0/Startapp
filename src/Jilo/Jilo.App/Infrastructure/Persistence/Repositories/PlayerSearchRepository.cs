@@ -46,7 +46,6 @@ public class PlayerSearchRepository : IPlayerSearchRepository
                 ug.Profile.Id,
                 ug.Profile.Username,
                 ug.Profile.Bio ?? string.Empty,
-                ug.Profile.AvatarUrl,
                 ug.Profile.Rating,
                 ug.GameCatalog.GameName,
                 ug.Role,

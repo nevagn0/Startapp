@@ -25,7 +25,6 @@ public sealed class GetLobbyQueryHandler(
                     .Select(m => new LobbyMemberDto
                     {
                         Id = m.Profile.Id,
-                        AvatarUrl = m.Profile.AvatarUrl,
                         Rank = m.Profile.UserGames
                             .Where(ug => ug.GameId == l.GameId)
                             .Select(ug => ug.Rank)

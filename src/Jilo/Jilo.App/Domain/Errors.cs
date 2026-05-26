@@ -67,6 +67,10 @@ public static class Errors
         public static Error NotFound => Error.NotFound(
             code: "User.NotFound",
             description: "User not found");
+
+        public static Error AlreadyPremiumUser => Error.NotFound(
+            code: "User.AlreadyPremiumUser",
+            description: "User has already become premium user");
     }
 
     public static class Auth

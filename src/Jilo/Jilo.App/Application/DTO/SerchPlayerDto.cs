@@ -11,7 +11,6 @@ public record PlayerSearchResponse(
     Guid ProfileId,
     string Username,
     string Bio,
-    string? AvatarUrl,
     int Rating,
     string GameName,
     string Role,

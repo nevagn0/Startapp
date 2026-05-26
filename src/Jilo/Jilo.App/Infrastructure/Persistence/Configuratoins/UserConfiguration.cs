@@ -18,7 +18,6 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
             .WithOne(r => r.User)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasIndex(x => x.Email).IsUnique();
         builder.HasIndex(x => x.Username).IsUnique();
     }
 }

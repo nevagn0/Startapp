@@ -26,7 +26,6 @@ public sealed class UpdateProfileCommandHandler(
             profile.Value.Id,
             profile.Value.UserId,
             profile.Value.Username,
-            profile.Value.Bio,
-            profile.Value.AvatarUrl);
+            profile.Value.Bio);
     }
 }
