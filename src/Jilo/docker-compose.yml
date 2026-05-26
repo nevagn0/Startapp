@@ -20,11 +20,11 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
-      - ConnectionStrings__PostgresDatabase=Host=postgres-db;Port=5432;Database=jilo;Username=Developer;Password=Developer123!
-      - JwtOptions__Audience=Jilo.App
-      - JwtOptions__Issuer=AuthService
-      - JwtOptions__Key=12389e6ruh4378refas34trgudisaghv78rfg8745whfgrewkjdgfh3489q0ter
-      - JwtOptions__AccessTokenLifetimeSeconds=300
+      - ConnectionStrings__PostgresDatabase=Host=postgres-db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - JwtOptions__Audience=${JWT_AUDIENCE}
+      - JwtOptions__Issuer=${JWT_ISSUER}
+      - JwtOptions__Key=${JWT_KEY}
+      - JwtOptions__AccessTokenLifetimeSeconds=${JWT_ACCESS_TOKEN_LIFETIME}
     ports:
       - "8080:8080"
     depends_on:
@@ -37,13 +37,13 @@ services:
   postgres-db:
     image: postgres:18
     environment:
-      - POSTGRES_USER=Developer
-      - POSTGRES_PASSWORD=Developer123!
-      - POSTGRES_DB=jilo
-    ports:
-      - "5432:5432"
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - postgres-data:/var/lib/postgresql
+    ports:
+      - "5432:5432" 
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U Developer -d jilo"]
       interval: 5s
