@@ -1,5 +1,5 @@
 import { handleUnauthorized } from './authSession'
-
+const API_BASE_URL = 'http://45.157.160.208:8080';
 const PROBLEM_JSON = 'application/problem+json'
 const AUTH_ENDPOINTS = [
   '/api/v1/auth/login',
@@ -29,7 +29,7 @@ const shouldAttemptRefresh = (url) => !AUTH_ENDPOINTS.some((endpoint) => url.sta
 
 const tryRefreshSession = async () => {
   if (!refreshPromise) {
-    refreshPromise = fetch('/api/v1/auth/refresh', {
+    refreshPromise = fetch('${API_BASE_URL}/api/v1/auth/refresh', {
       method: 'POST',
       credentials: 'include',
     })
@@ -67,7 +67,7 @@ export const request = async (url, options = {}) => {
     ...options.headers,
   }
 
-  let response = await fetch(url, {
+    let response = await fetch(`${API_BASE_URL}${url}`, {
     credentials: 'include',
     headers,
     ...options,
