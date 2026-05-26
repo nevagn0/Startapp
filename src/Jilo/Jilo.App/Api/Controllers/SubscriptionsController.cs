@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.IdentityModel.Tokens.Jwt;
-using System.Reflection.Metadata.Ecma335;
 
 namespace Jilo.App.Api.Controllers;
 
@@ -69,13 +68,15 @@ public sealed class SubscriptionsController(IMediator mediator, IOptions<JwtOpti
     {
         HttpContext.Response.Cookies.Append("access_token", accessToken, new CookieOptions
         {
-            SameSite = SameSiteMode.None,
+            HttpOnly = true,
+            SameSite = SameSiteMode.Lax,
             Expires = DateTime.UtcNow.AddSeconds(_jwtOptions.AccessTokenLifetimeSeconds)
         });
 
         HttpContext.Response.Cookies.Append("refresh_token", refreshToken, new CookieOptions
         {
-            SameSite = SameSiteMode.None,
+            HttpOnly = true,
+            SameSite = SameSiteMode.Lax,
             Expires = DateTime.UtcNow.AddDays(30)
         });
     }
