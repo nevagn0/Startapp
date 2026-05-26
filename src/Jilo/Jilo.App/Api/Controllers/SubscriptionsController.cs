@@ -69,16 +69,12 @@ public sealed class SubscriptionsController(IMediator mediator, IOptions<JwtOpti
     {
         HttpContext.Response.Cookies.Append("access_token", accessToken, new CookieOptions
         {
-            Secure = true,
-            HttpOnly = true,
             SameSite = SameSiteMode.None,
             Expires = DateTime.UtcNow.AddSeconds(_jwtOptions.AccessTokenLifetimeSeconds)
         });
 
         HttpContext.Response.Cookies.Append("refresh_token", refreshToken, new CookieOptions
         {
-            Secure = true,
-            HttpOnly = true,
             SameSite = SameSiteMode.None,
             Expires = DateTime.UtcNow.AddDays(30)
         });
