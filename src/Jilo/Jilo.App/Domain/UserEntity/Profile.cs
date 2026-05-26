@@ -14,8 +14,6 @@ public sealed class Profile
 
     public string? Bio { get; private set; }
 
-    public string? AvatarUrl { get; private set; }
-
     public int Rating { get; private set; }
 
     public User User { get; private init; } = null!;
@@ -28,14 +26,13 @@ public sealed class Profile
 
     public ICollection<LobbyMember> LobbyMemberships { get; private set; }
 
-    public Profile(Guid userId, string username, string? bio = null, string? avatarUrl = null)
+    public Profile(Guid userId, string username, string? bio = null)
     {
         Id = Guid.NewGuid();
         UserId = userId;
         Username = username;
         Bio = bio;
         Rating = 0;
-        AvatarUrl = avatarUrl;
         UserGames = [];
         CreatedLobbies = [];
         LobbyMemberships = [];
@@ -50,11 +47,6 @@ public sealed class Profile
     public void UpdateBio(string bio)
     {
         Bio = bio;
-    }
-
-    public void UpdateAvatarUrl(string avatarUrl)
-    {
-        AvatarUrl = avatarUrl;
     }
 
     public ErrorOr<Success> Subscribe()

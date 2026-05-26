@@ -6,8 +6,6 @@ public sealed class LobbyMemberDto
 
     public required string Username { get; init; }
 
-    public required string? AvatarUrl { get; init; }
-
     public required string Role { get; init; }
 
     public required string Rank { get; init; }
