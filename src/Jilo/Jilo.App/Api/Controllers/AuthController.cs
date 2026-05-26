@@ -130,17 +130,29 @@ public sealed class AuthController(IMediator mediator, IOptions<JwtOptions> jwtO
 
     private void AddTokensToCookie(string accessToken, string refreshToken)
     {
-        HttpContext.Response.Cookies.Append("access_token", accessToken, new CookieOptions
+        var accessCookieOptions = new CookieOptions
         {
-            SameSite = SameSiteMode.None,
+            HttpOnly = true,
+            SameSite = SameSiteMode.Lax,
             Expires = DateTime.UtcNow.AddSeconds(_jwtOptions.AccessTokenLifetimeSeconds)
-        });
+        };
 
-        HttpContext.Response.Cookies.Append("refresh_token", refreshToken, new CookieOptions
+        var refreshCookieOptions = new CookieOptions
         {
-            SameSite = SameSiteMode.None,
+            HttpOnly = true,
+            SameSite = SameSiteMode.Lax,
             Expires = DateTime.UtcNow.AddDays(30)
-        });
+        };
+
+        HttpContext.Response.Cookies.Append(
+            "access_token",
+            accessToken,
+            accessCookieOptions);
+
+        HttpContext.Response.Cookies.Append(
+            "refresh_token",
+            refreshToken,
+            refreshCookieOptions);
     }
 
     private void RemoveTokensFromCookie()
