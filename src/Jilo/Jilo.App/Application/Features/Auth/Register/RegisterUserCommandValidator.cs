@@ -4,10 +4,6 @@ namespace Jilo.App.Application.Features.Auth.Register;
 
 public sealed class RegisterUserCommandValidator : AbstractValidator<RegisterUserCommand>
 {
-    private const int MaxEmailLength = 255;
-
-    private const int MinEmailLength = 5;
-
     private const int MinPasswordLength = 5;
 
     private const int MinUsernameLength = 4;
@@ -16,12 +12,6 @@ public sealed class RegisterUserCommandValidator : AbstractValidator<RegisterUse
 
     public RegisterUserCommandValidator()
     {
-        RuleFor(c => c.Email)
-            .NotEmpty().WithMessage("Email is required")
-            .EmailAddress().WithMessage("Invalid email format")
-            .MinimumLength(MinEmailLength).WithMessage($"Min email length is {MinEmailLength}")
-            .MaximumLength(MaxEmailLength).WithMessage($"Max email length is {MaxEmailLength}");
-
         RuleFor(c => c.Password)
             .NotEmpty().WithMessage("Password is required")
             .MinimumLength(MinPasswordLength).WithMessage($"Password must be at least {MinPasswordLength} characters")

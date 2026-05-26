@@ -13,17 +13,9 @@ public sealed class UserRepository(ServiceContext context) : IUserRepository
         context.Users.Add(user);
     }
 
-    public async Task<(bool EmailExists, bool UsernameExists)> ExistsAsync(string email, string username, CancellationToken cancellationToken = default)
+    public async Task<bool> ExistsAsync(string username, CancellationToken cancellationToken = default)
     {
-        var existing = await context.Users
-            .Where(u => u.Email == email || u.Username == username)
-            .Select(u => new { u.Email, u.Username })
-            .ToListAsync(cancellationToken);
-
-        return (
-            EmailExists: existing.Any(e => e.Email == email),
-            UsernameExists: existing.Any(e => e.Username == username)
-        );
+        return await context.Users.AnyAsync(u => u.Username == username, cancellationToken);
     }
 
     public async Task<ErrorOr<User>> FindAsync(string username, CancellationToken cancellationToken = default)

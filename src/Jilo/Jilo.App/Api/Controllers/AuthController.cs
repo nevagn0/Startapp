@@ -24,7 +24,7 @@ public sealed class AuthController(IMediator mediator, IOptions<JwtOptions> jwtO
     public async Task<ActionResult<RegisterUserResponse>> RegisterAsync([FromBody]RegisterUserRequest request,
         CancellationToken cancellationToken = default)
     {
-        var command = new RegisterUserCommand(request.Email, request.Username, request.Password);
+        var command = new RegisterUserCommand(request.Username, request.Password);
 
         var registerResult = await mediator.Send(command, cancellationToken);
 

@@ -15,26 +15,16 @@ public sealed class RegisterUserCommandHandler(
 {
     public async Task<ErrorOr<RegisterUserResponse>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
-        var (EmailExists, UsernameExists) = await repo.ExistsAsync(request.Email, request.Username, cancellationToken);
+        var exists = await repo.ExistsAsync(request.Username, cancellationToken);
 
-        if (UsernameExists && UsernameExists)
-        {
-            return Errors.User.EmailAndUsernameAlreadyExist;
-        }
-
-        if (UsernameExists)
+        if (exists)
         {
             return Errors.User.UsernameAlreadyExists;
         }
 
-        if (EmailExists)
-        {
-            return Errors.User.EmailAlreadyExists;
-        }
-
         var passwordHash = passwordHasher.HashPassword(request.Password);
 
-        var user = new User(request.Username, request.Email, passwordHash, Role.Player);
+        var user = new User(request.Username, passwordHash, Role.Player);
 
         repo.Add(user);
 
@@ -42,7 +32,6 @@ public sealed class RegisterUserCommandHandler(
 
         return new RegisterUserResponse(
             user.Id,
-            user.Email,
             user.Username,
             user.CreatedAtUtc,
             user.UpdatedAtUtc);

@@ -6,8 +6,6 @@ public sealed class User
 
     public string Username { get; private set; }
 
-    public string Email { get; private set; }
-
     public string PasswordHash { get; private set; }
 
     public Role Role { get; private set; }
@@ -20,11 +18,10 @@ public sealed class User
 
     public ICollection<RefreshToken> RefreshTokens { get; private set; }
 
-    public User(string username, string email, string passwordHash, Role role)
+    public User(string username, string passwordHash, Role role)
     {
         Id = Guid.NewGuid();
         Username = username;
-        Email = email;
         PasswordHash = passwordHash;
         Role = role;
         RefreshTokens = [];
