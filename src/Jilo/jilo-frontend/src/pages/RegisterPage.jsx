@@ -6,7 +6,6 @@ import { PageFrame } from '../components/PageFrame'
 export function RegisterPage() {
   const navigate = useNavigate()
   const [form, setForm] = useState({
-    email: '',
     username: '',
     password: '',
     confirmPassword: '',
@@ -25,7 +24,7 @@ export function RegisterPage() {
     setError('')
     setSuccess('')
 
-    if (!form.email.trim() || !form.username.trim() || !form.password.trim() || !form.confirmPassword.trim()) {
+    if (!form.username.trim() || !form.password.trim() || !form.confirmPassword.trim()) {
       setError('Все поля обязательны для регистрации.')
       return
     }
@@ -43,7 +42,6 @@ export function RegisterPage() {
     try {
       setIsSubmitting(true)
       const response = await registerUser({
-        email: form.email,
         username: form.username,
         password: form.password,
       })
@@ -67,20 +65,6 @@ export function RegisterPage() {
         </p>
 
         <form className="auth-form" onSubmit={onSubmit}>
-          <label className="label" htmlFor="email">
-            Email
-            <input
-              className="input"
-              id="email"
-              name="email"
-              type="email"
-              value={form.email}
-              onChange={onChange}
-              autoComplete="email"
-              placeholder="you@example.com"
-            />
-          </label>
-
           <label className="label" htmlFor="username">
             Имя пользователя
             <input

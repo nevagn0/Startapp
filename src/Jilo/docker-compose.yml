@@ -9,6 +9,8 @@ services:
       - "5173:80"
     depends_on:
       - jilo.app
+    networks:
+      - default
 
   jilo.app:
     image: ${DOCKER_REGISTRY-}jiloapp
@@ -28,6 +30,8 @@ services:
     depends_on:
       postgres-db:
         condition: service_healthy
+    networks:
+      - default
   
 
   postgres-db:
@@ -46,6 +50,12 @@ services:
       timeout: 5s
       retries: 10
       start_period: 10s
+    networks:
+      - default
 
 volumes:
   postgres-data:
+  
+networks:
+  default:
+    driver: bridge
