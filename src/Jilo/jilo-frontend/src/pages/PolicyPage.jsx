@@ -17,7 +17,7 @@ export function PolicyPage() {
                             Пользователей сайта <strong>Jilo</strong> (далее — Сайт).
                         </p>
                         <p>
-                            Оператор: <strong>Адышкин Сергей Сергеевич</strong
+                            Оператор: <strong>Адышкин Сергей Сергеевич</strong>
                             e‑mail: <a href="mailto:no-email">no-email</a>.
                         </p>
                     </section>
