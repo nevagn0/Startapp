@@ -5,6 +5,8 @@ import { RegisterPage } from './pages/RegisterPage'
 import { HomePage } from './pages/HomePage'
 import { ProfilePage } from './pages/ProfilePage'
 import { LobbyPage } from './pages/LobbyPage'
+import { PolicyPage } from './pages/PolicyPage'
+import { AgreementPage } from './pages/AgreementPage'
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/home" element={<Navigate to="/" replace />} />
+      <Route path="/policy" element={<PolicyPage />} />
+      <Route path="/agreement" element={<AgreementPage />} />
       <Route
         path="/profile"
         element={
