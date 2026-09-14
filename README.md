@@ -1,1 +1,1 @@
-[лендинг](branched.ru)
+[лендинг](https://branched.ru/)
